@@ -1,4 +1,4 @@
-# flutter_blurhash
+# Flutter BlurHash
 
 Compact representation of a placeholder for an image.
 
