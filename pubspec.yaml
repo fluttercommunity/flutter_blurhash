@@ -1,0 +1,18 @@
+name: flutter_blurhash
+description: Compact representation of a placeholder for an image
+version: 0.1.0
+author: Robert Felker
+homepage:
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  image: ^2.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

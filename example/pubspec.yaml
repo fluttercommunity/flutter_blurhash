@@ -1,0 +1,23 @@
+name: example
+version: 1.0.0
+homepage: https://github.com/solido/provider
+author: Robert Felker <flutter@robbieone.com>
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+dependency_overrides:
+  flutter_blurhash:
+    path: ../
+
+flutter:
+  uses-material-design: true
