@@ -3,13 +3,25 @@
 Compact representation of a placeholder for an image
 see https://blurha.sh/
 
-## Getting Started
+## Example
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+```dart
+class BlurHashApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text("BlurHash"),
+            ),
+            body: Container(
+              width: 800,
+              child: AspectRatio(
+                  aspectRatio: 1.6, child: BlurHash(hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I")),
+            )),
+      );
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+  const BlurHashApp();
+}
+```
+
+
