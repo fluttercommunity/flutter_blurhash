@@ -1,7 +1,8 @@
 # flutter_blurhash
 
-Compact representation of a placeholder for an image
-see https://blurha.sh/
+Compact representation of a placeholder for an image.
+
+See https://blurha.sh/ for a detailed explanation.
 
 ## Example
 
