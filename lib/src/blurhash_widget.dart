@@ -13,21 +13,21 @@ class BlurHash extends StatelessWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-      builder: (ctx, cns) => FutureBuilder<ui.Image>(
-            future: BlurHashDecoder().decode(
-                blurhash: hash,
-                width: cns.maxWidth.round(),
-                height: cns.maxHeight.round()),
-            builder: (ctx, snap) => (snap.hasData)
-                ? CustomPaint(
-                    painter: BlurHashPainter(img: snap.data),
-                  )
-                : Container(
-                    constraints: BoxConstraints.expand(),
-                    color: color,
-                  ),
-          ));
+  Widget build(BuildContext context) => FutureBuilder<ui.Image>(
+        future: BlurHashDecoder().decode(
+          blurhash: hash,
+          width: 32,
+          height: 32,
+        ),
+        builder: (ctx, snap) => (snap.hasData)
+            ? CustomPaint(
+                painter: BlurHashPainter(img: snap.data),
+              )
+            : Container(
+                constraints: BoxConstraints.expand(),
+                color: color,
+              ),
+      );
 }
 
 class BlurHashPainter extends CustomPainter {
@@ -37,7 +37,12 @@ class BlurHashPainter extends CustomPainter {
 
   @override
   void paint(ui.Canvas canvas, ui.Size size) {
-    canvas.drawImage(img, Offset.zero, Paint());
+    paintImage(
+      canvas: canvas,
+      rect: Offset.zero & size,
+      image: img,
+      fit: BoxFit.fill,
+    );
   }
 
   @override
