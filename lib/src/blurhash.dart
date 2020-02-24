@@ -3,9 +3,6 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
-
-
 class BlurHashDecoder {
   Future<ui.Image> decode(
       {String blurhash, int width, int height, double punch = 1.0}) {
@@ -64,9 +61,9 @@ class BlurHashDecoder {
     final completer = Completer<ui.Image>();
     ui.decodeImageFromPixels(
         Uint8List.view(pixels.buffer), width, height, ui.PixelFormat.rgba8888,
-            (img) {
-          completer.complete(img);
-        });
+        (img) {
+      completer.complete(img);
+    });
 
     return completer.future;
   }
@@ -227,4 +224,3 @@ class BlurHashDecoder {
     "~"
   ];
 }
-
