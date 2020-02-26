@@ -1,3 +1,5 @@
+[![pub package](https://img.shields.io/pub/v/flutter_blurhash.svg)](https://pub.dartlang.org/packages/flutter_blurhash)
+
 # Flutter BlurHash
 
 Compact representation of a placeholder for an image.
