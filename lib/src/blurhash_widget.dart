@@ -54,7 +54,7 @@ class BlurHashPainter extends CustomPainter {
 
   @override
   void paint(ui.Canvas canvas, ui.Size size) {
-    print("Painting on $size");
+    //print("Painting on $size");
     paintImage(
       canvas: canvas,
       rect: Offset.zero & renderSize,
