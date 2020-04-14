@@ -1,3 +1,9 @@
+# 0.2.0
+
+- Cleaned up BlurHash Widget
+- Refactored and cleaned up decoder to a global method.
+- Moved package to Flutter Community
+
 # 0.1.2
 
 - Performances and extended list as example
