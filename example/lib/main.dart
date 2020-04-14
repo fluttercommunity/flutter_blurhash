@@ -17,22 +17,29 @@ void main() {
 }
 
 class BlurHashApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(
-              title: Text("BlurHash"),
-            ),
-            body: Container(
-              constraints: BoxConstraints.tight(Size(300, 650)),
-              child: ListView.builder(
-                  itemCount: entries.length,
-                  itemExtent: 200,
-                  itemBuilder: (ctx, idx) => Container(
-                      constraints: BoxConstraints.tight(Size(180, 150)),
-                      child: BlurHash(hash: entries[idx]))),
-            )),
-      );
+  const BlurHashApp({Key key}) : super(key: key);
 
-  const BlurHashApp();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("BlurHash"),
+        ),
+        body: ConstrainedBox(
+          constraints: BoxConstraints.tight(Size(300, 650)),
+          child: ListView.builder(
+            itemCount: entries.length,
+            itemExtent: 200,
+            itemBuilder: (ctx, idx) {
+              return ConstrainedBox(
+                constraints: BoxConstraints.tight(Size(180, 150)),
+                child: BlurHash(hash: entries[idx]),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
 }
