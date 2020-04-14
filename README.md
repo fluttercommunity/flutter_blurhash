@@ -20,20 +20,24 @@ Constrain your widget render area and let BlurHash fill the pixels
 
 ```dart
 class BlurHashApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(
-              title: Text("BlurHash"),
-            ),
-            body: Container(
-              width: 800,
-              child: AspectRatio(
-                  aspectRatio: 1.6, child: BlurHash(hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I")),
-            )),
-      );
+  const BlurHashApp({Key key}) : super(key: key);
 
-  const BlurHashApp();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text("BlurHash")),
+        body: SizedBox.expand(
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 1.6,
+              child: BlurHash(hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I"),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 ```
 
