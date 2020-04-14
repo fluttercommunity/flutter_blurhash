@@ -1,5 +1,4 @@
-[![Flutter Community: PACKAGE_NAME](https://fluttercommunity.dev/_github/header/PACKAGE_NAME)](https://github.com/fluttercommunity/community)
-
+[![Flutter Community: flutter_blurhash](https://fluttercommunity.dev/_github/header/flutter_blurhash)](https://github.com/fluttercommunity/community)
 [![pub package](https://img.shields.io/pub/v/flutter_blurhash.svg)](https://pub.dev/packages/flutter_blurhash)
 
 # Flutter BlurHash
