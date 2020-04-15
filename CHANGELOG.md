@@ -1,3 +1,11 @@
+# 0.2.0+3
+
+- Temporary removed ColoredBox until it lands on stable channel
+
+# 0.2.0+2
+
+- Code cleanup
+
 # 0.2.0
 
 - Cleaned up BlurHash Widget

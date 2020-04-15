@@ -7,7 +7,7 @@ class BlurHash extends StatefulWidget {
   const BlurHash({
     Key key,
     this.hash,
-    this.color = Colors.grey,
+    this.color = Colors.blueGrey,
     this.imageFit = BoxFit.fill,
     this.decodingWidth = 32,
     this.decodingHeight = 32,
@@ -55,14 +55,11 @@ class _BlurHashState extends State<BlurHash> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<ui.Image>(
-      future: _image,
-      builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-        return snapshot.hasData
-            ? RawImage(image: snapshot.data, fit: widget.imageFit)
-            : ColoredBox(color: widget.color);
-      },
-    );
-  }
+  Widget build(BuildContext context) => FutureBuilder<ui.Image>(
+        future: _image,
+        builder: (ctx, snap) => snap.hasData
+            ? RawImage(image: snap.data, fit: widget.imageFit)
+            //: ColoredBox(color: widget.color),
+            : Container(color: widget.color),
+      );
 }

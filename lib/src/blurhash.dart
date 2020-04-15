@@ -64,7 +64,8 @@ Future<ui.Image> blurHashDecode({
   }
 
   final completer = Completer<ui.Image>();
-  ui.decodeImageFromPixels(Uint8List.view(pixels.buffer), width, height, ui.PixelFormat.rgba8888, completer.complete);
+  ui.decodeImageFromPixels(Uint8List.view(pixels.buffer), width, height,
+      ui.PixelFormat.rgba8888, completer.complete);
 
   return completer.future;
 }
@@ -97,7 +98,8 @@ void _validateBlurHash(String blurHash) {
   final numX = (sizeFlag % 9) + 1;
 
   if (blurHash.length != 4 + 2 * numX * numY) {
-    throw Exception('blurhash length mismatch: length is ${blurHash.length} but '
+    throw Exception(
+        'blurhash length mismatch: length is ${blurHash.length} but '
         'it should be ${4 + 2 * numX * numY}');
   }
 }
@@ -142,4 +144,5 @@ List _decodeAC(int value, double maximumValue) {
   return rgb;
 }
 
-const _digitCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
+const _digitCharacters =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
