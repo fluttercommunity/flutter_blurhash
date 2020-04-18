@@ -1,3 +1,7 @@
+# 0.2.1
+
+- Automatic network image load with FadeIn Effect
+
 # 0.2.0+3
 
 - Temporary removed ColoredBox until it lands on stable channel

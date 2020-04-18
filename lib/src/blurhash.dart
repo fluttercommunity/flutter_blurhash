@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 
 import 'package:meta/meta.dart';
 
-Future<ui.Image> blurHashDecode({
+Future<Uint8List> blurHashDecode({
   @required String blurHash,
   @required int width,
   @required int height,
@@ -34,7 +34,7 @@ Future<ui.Image> blurHashDecode({
   }
 
   final bytesPerRow = width * 4;
-  final pixels = Uint8ClampedList(bytesPerRow * height);
+  final pixels = Uint8List(bytesPerRow * height);
 
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
@@ -63,9 +63,23 @@ Future<ui.Image> blurHashDecode({
     }
   }
 
+  return Future.value(pixels);
+}
+
+Future<ui.Image> blurHashDecodeImage({
+  @required String blurHash,
+  @required int width,
+  @required int height,
+  double punch = 1.0,
+}) {
+  assert(blurHash != null && width != null && height != null && punch != null);
+  _validateBlurHash(blurHash);
+
   final completer = Completer<ui.Image>();
-  ui.decodeImageFromPixels(Uint8List.view(pixels.buffer), width, height,
-      ui.PixelFormat.rgba8888, completer.complete);
+
+  blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch)
+      .then((pixels) => ui.decodeImageFromPixels(Uint8List.view(pixels.buffer),
+          width, height, ui.PixelFormat.rgba8888, completer.complete));
 
   return completer.future;
 }
