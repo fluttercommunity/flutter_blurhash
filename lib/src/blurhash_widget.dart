@@ -34,11 +34,22 @@ class BlurHash extends StatefulWidget {
   /// Callback when image is downloaded
   final VoidCallback onReady;
 
+  /// Hash to decode
   final String hash;
+
+  /// Displayed background color before decoding
   final Color color;
+
+  /// How to fit decoded & downloaded image
   final BoxFit imageFit;
+
+  /// Decoding definition
   final int decodingWidth;
+
+  /// Decoding definition
   final int decodingHeight;
+
+  /// Remote resource to download
   final String image;
 
   /// The duration of the fade-out animation for the [placeholder].
@@ -59,6 +70,7 @@ class BlurHash extends StatefulWidget {
 
 class BlurHashState extends State<BlurHash> {
   Future<Uint8List> _image;
+  bool loaded = false;
 
   @override
   void initState() {
@@ -106,10 +118,11 @@ class BlurHashState extends State<BlurHash> {
   Widget prepareDisplayedImage() =>
       Image.network(widget.image, fit: widget.imageFit, loadingBuilder:
           (BuildContext context, Widget img, ImageChunkEvent loadingProgress) {
-        // Image is here !
         if (loadingProgress == null) {
+          // Image is now loaded, trigger the event
+          loaded = true;
           widget.onReady?.call();
-          return Display(child: img);
+          return _DisplayImage(child: img);
         } else {
           return const SizedBox();
         }
@@ -120,20 +133,29 @@ class BlurHashState extends State<BlurHash> {
         future: _image,
         builder: (ctx, snap) => snap.hasData
             ? Image(image: MemoryImage(snap.data), fit: widget.imageFit)
-            : ColoredBox(color: widget.color),
+            : Container(color: widget.color),
       );
 }
 
-class Display extends StatefulWidget {
+// Inner display details & controls
+class _DisplayImage extends StatefulWidget {
   final Widget child;
+  final Duration duration;
 
-  const Display({this.child, Key key}) : super(key: key);
+  const _DisplayImage(
+      {@required this.child,
+      this.duration = const Duration(milliseconds: 800),
+      Key key})
+      : assert(duration != null),
+        assert(child != null),
+        super(key: key);
 
   @override
-  _DisplayState createState() => _DisplayState();
+  _DisplayImageState createState() => _DisplayImageState();
 }
 
-class _DisplayState extends State<Display> with SingleTickerProviderStateMixin {
+class _DisplayImageState extends State<_DisplayImage>
+    with SingleTickerProviderStateMixin {
   Animation<double> opacity;
   AnimationController controller;
 
@@ -146,8 +168,7 @@ class _DisplayState extends State<Display> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-        duration: const Duration(milliseconds: 1200), vsync: this);
+    controller = AnimationController(duration: widget.duration, vsync: this);
     opacity = Tween<double>(begin: .0, end: 1.0).animate(controller);
     controller.forward();
   }

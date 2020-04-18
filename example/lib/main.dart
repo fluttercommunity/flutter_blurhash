@@ -62,7 +62,7 @@ class BlurHashApp extends StatelessWidget {
               deltaBottom > (0.3 * viewPortDimension));
 
   Container buildEntry(bool isInView, int idx) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 256),
+        padding: EdgeInsets.only(left: 64, right: 450),
         height: 290,
         margin: const EdgeInsets.only(bottom: 4),
         child: isInView
