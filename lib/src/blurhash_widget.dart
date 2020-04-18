@@ -18,6 +18,7 @@ class BlurHash extends StatefulWidget {
     this.image,
     this.onDecoded,
     this.onReady,
+    this.onStarted,
     this.duration = const Duration(milliseconds: 1000),
     this.curve = Curves.easeOut,
   })  : assert(color != null),
@@ -31,6 +32,9 @@ class BlurHash extends StatefulWidget {
 
   /// Callback when image is downloaded
   final VoidCallback onReady;
+
+  /// Callback when image is downloaded
+  final VoidCallback onStarted;
 
   /// Hash to decode
   final String hash;
@@ -61,6 +65,7 @@ class BlurHash extends StatefulWidget {
 class BlurHashState extends State<BlurHash> {
   Future<Uint8List> _image;
   bool loaded;
+  bool loading;
 
   @override
   void initState() {
@@ -71,6 +76,7 @@ class BlurHashState extends State<BlurHash> {
   void _init() {
     _decodeImage();
     loaded = false;
+    loading = false;
   }
 
   @override
@@ -112,6 +118,12 @@ class BlurHashState extends State<BlurHash> {
   Widget prepareDisplayedImage() =>
       Image.network(widget.image, fit: widget.imageFit, loadingBuilder:
           (BuildContext context, Widget img, ImageChunkEvent loadingProgress) {
+        // Download started
+        if (loading == false) {
+          loading = true;
+          widget.onStarted?.call();
+        }
+
         if (loadingProgress == null) {
           // Image is now loaded, trigger the event
           loaded = true;
