@@ -5,13 +5,14 @@ authors:
   - Robert Felker <flutter@robbieone.com>
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   inview_notifier_list: ^1.0.0
+  google_fonts: ^0.5.0+1
 
 dev_dependencies:
   flutter_test:
