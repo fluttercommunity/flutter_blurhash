@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +30,11 @@ const entries = [
   ],
 ];
 
-const duration = Duration(milliseconds: 700);
+const duration = Duration(milliseconds: 500);
 
 const radius = Radius.circular(16);
 
-const topMark = .4;
+const topMark = .6;
 
 void main() {
   runApp(MaterialApp(
@@ -48,49 +49,32 @@ class BlurHashApp extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(children: [
-        FractionallySizedBox(
-          heightFactor: topMark,
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xEEFFFFFF), Color(0xCCFFFFFF)],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
+  Widget build(BuildContext context) =>
+      NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification notif) => true,
+          child: Stack(children: [
+            FractionallySizedBox(
+              heightFactor: topMark,
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xEEFFFFFF), Color(0xCCFFFFFF)],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(-.8, -.85),
-          child: Text(
-            "Discover",
-            style: GoogleFonts.josefinSans(
-              textStyle: TextStyle(
-                  color: const Color(0xFF222222),
-                  fontSize: 180,
-                  height: .84,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none),
+            Align(
+              alignment: Alignment(-.8, -.5),
+              child: Container(
+                margin: EdgeInsets.only(top: 110),
+                child: const Header(),
+              ),
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(-.8, -.5),
-          child: Text(
-            "Our\nCollection",
-            style: GoogleFonts.josefinSans(
-              textStyle: TextStyle(
-                  color: const Color(0xFF222222),
-                  fontSize: 120,
-                  height: .84,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none),
-            ),
-          ),
-        ),
-        buildInViewNotifierList()
-      ]);
+            //BackdropFilter(child: , filter: ImageFilter.blur(sigmaY: 15, sigmaX: 15)),
+            buildInViewNotifierList()
+          ]));
 
   Widget buildList() => ListView.builder(
       itemCount: entries.length,
@@ -101,7 +85,7 @@ class BlurHashApp extends StatelessWidget {
       builder: (ctx, idx) => InViewNotifierWidget(
           id: '$idx',
           builder: (BuildContext context, bool isInView, Widget child) {
-            if (idx == 0) return SizedBox(height: 600);
+            if (idx == 0) return SizedBox(height: 500);
             if (idx == entries.length + 1) return SizedBox(height: 800);
 
             return buildEntry(isInView, idx - 1);
@@ -113,15 +97,49 @@ class BlurHashApp extends StatelessWidget {
       );
 
   Container buildEntry(bool isInView, int idx) => Container(
-      padding: EdgeInsets.only(left: 0, right: 220),
-      height: 490,
+      padding: EdgeInsets.only(left: 0, right: 200),
+      height: 540,
       margin: const EdgeInsets.only(bottom: 24),
-      child: isInView
+      child: isInView || idx == 0
           ? SynchronizedDisplay(
               hash: entries[idx][0],
               uri: entries[idx][1],
               title: entries[idx][2])
           : BlurHash(hash: entries[idx][0]));
+}
+
+class Header extends StatelessWidget {
+  const Header({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Column(
+        children: <Widget>[
+          Text(
+            "Discover",
+            style: GoogleFonts.josefinSans(
+              textStyle: TextStyle(
+                  color: const Color(0xFF222222),
+                  fontSize: 180,
+                  height: .84,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.none),
+            ),
+          ),
+          Text(
+            "Our\nCollection",
+            style: GoogleFonts.josefinSans(
+              textStyle: TextStyle(
+                  color: const Color(0xFF222222),
+                  fontSize: 120,
+                  height: .84,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.none),
+            ),
+          ),
+        ],
+      );
 }
 
 class SynchronizedDisplay extends StatefulWidget {
@@ -169,6 +187,14 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay>
           hash: widget.hash,
           image: widget.uri,
           duration: duration,
+        ),
+        Align(
+          alignment: Alignment(1.4, 0),
+          child: Icon(
+            Icons.chevron_right,
+            size: 50,
+            color: Colors.white,
+          ),
         ),
         Transform.rotate(
           angle: pi * -.5,

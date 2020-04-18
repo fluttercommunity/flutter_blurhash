@@ -1,3 +1,7 @@
+# 0.3.0
+
+- Events registration to sync your animations
+
 # 0.2.1
 
 - Automatic network image load with FadeIn Effect
