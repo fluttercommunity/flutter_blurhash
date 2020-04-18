@@ -123,19 +123,25 @@ class Display extends StatefulWidget {
   _DisplayState createState() => _DisplayState();
 }
 
-class _DisplayState extends State<Display> {
-  double opacity = .0;
+class _DisplayState extends State<Display> with SingleTickerProviderStateMixin {
+  Animation<double> opacity;
+  AnimationController controller;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    setState(() => opacity = 1);
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedOpacity(
+  Widget build(BuildContext context) => FadeTransition(
         opacity: opacity,
-        duration: const Duration(seconds: 5),
         child: widget.child,
       );
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+        duration: const Duration(milliseconds: 1200), vsync: this);
+
+    opacity = Tween<double>(begin: .0, end: 1.0).animate(controller);
+
+    controller.forward();
+  }
 }
