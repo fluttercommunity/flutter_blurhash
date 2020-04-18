@@ -62,17 +62,11 @@ class BlurHashApp extends StatelessWidget {
               deltaBottom > (0.3 * viewPortDimension));
 
   Container buildEntry(bool isInView, int idx) => Container(
-        padding: EdgeInsets.only(left: 64, right: 450),
-        height: 290,
-        margin: const EdgeInsets.only(bottom: 4),
-        child: isInView
-            ? BlurHash(
-                fadeInDuration: const Duration(milliseconds: 1800),
-                onReady: onReady,
-                hash: entries[idx][0],
-                image: entries[idx][1])
-            : BlurHash(
-                fadeInDuration: const Duration(milliseconds: 1800),
-                hash: entries[idx][0]),
-      );
+      padding: EdgeInsets.only(left: 32, right: 500),
+      height: 290,
+      margin: const EdgeInsets.only(bottom: 4),
+      child: isInView
+          ? BlurHash(
+              onReady: onReady, hash: entries[idx][0], image: entries[idx][1])
+          : BlurHash(hash: entries[idx][0]));
 }

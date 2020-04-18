@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:image/image.dart' as graphics;
 
-const _DEFAULT_SIZE = 64;
+const _DEFAULT_SIZE = 32;
 
 /// Display a Hash then fade to Image
 class BlurHash extends StatefulWidget {
@@ -18,10 +18,8 @@ class BlurHash extends StatefulWidget {
     this.image,
     this.onDecoded,
     this.onReady,
-    this.fadeOutDuration = const Duration(milliseconds: 300),
-    this.fadeOutCurve = Curves.easeOut,
-    this.fadeInDuration = const Duration(milliseconds: 700),
-    this.fadeInCurve = Curves.easeIn,
+    this.duration = const Duration(milliseconds: 1000),
+    this.curve = Curves.easeOut,
   })  : assert(color != null),
         assert(hash != null),
         assert(decodingWidth > 0),
@@ -52,17 +50,9 @@ class BlurHash extends StatefulWidget {
   /// Remote resource to download
   final String image;
 
-  /// The duration of the fade-out animation for the [placeholder].
-  final Duration fadeOutDuration;
+  final Duration duration;
 
-  /// The curve of the fade-out animation for the [placeholder].
-  final Curve fadeOutCurve;
-
-  /// The duration of the fade-Out animation for the [image].
-  final Duration fadeInDuration;
-
-  /// The curve of the fade-in animation for the [image].
-  final Curve fadeInCurve;
+  final Curve curve;
 
   @override
   BlurHashState createState() => BlurHashState();
@@ -70,23 +60,27 @@ class BlurHash extends StatefulWidget {
 
 class BlurHashState extends State<BlurHash> {
   Future<Uint8List> _image;
-  bool loaded = false;
+  bool loaded;
 
   @override
   void initState() {
     super.initState();
+    _init();
+  }
+
+  void _init() {
     _decodeImage();
+    loaded = false;
   }
 
   @override
   void didUpdateWidget(BlurHash oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // TODO complete
     if (widget.hash != oldWidget.hash ||
         widget.image != oldWidget.image ||
         widget.decodingWidth != oldWidget.decodingWidth ||
         widget.decodingHeight != oldWidget.decodingHeight) {
-      _decodeImage();
+      _init();
     }
   }
 
@@ -122,7 +116,11 @@ class BlurHashState extends State<BlurHash> {
           // Image is now loaded, trigger the event
           loaded = true;
           widget.onReady?.call();
-          return _DisplayImage(child: img);
+          return _DisplayImage(
+            child: img,
+            duration: widget.duration,
+            curve: widget.curve,
+          );
         } else {
           return const SizedBox();
         }
@@ -141,12 +139,15 @@ class BlurHashState extends State<BlurHash> {
 class _DisplayImage extends StatefulWidget {
   final Widget child;
   final Duration duration;
+  final Curve curve;
 
   const _DisplayImage(
       {@required this.child,
       this.duration = const Duration(milliseconds: 800),
+      this.curve,
       Key key})
       : assert(duration != null),
+        assert(curve != null),
         assert(child != null),
         super(key: key);
 
@@ -169,7 +170,8 @@ class _DisplayImageState extends State<_DisplayImage>
   void initState() {
     super.initState();
     controller = AnimationController(duration: widget.duration, vsync: this);
-    opacity = Tween<double>(begin: .0, end: 1.0).animate(controller);
+    final curved = CurvedAnimation(parent: controller, curve: widget.curve);
+    opacity = Tween<double>(begin: .0, end: 1.0).animate(curved);
     controller.forward();
   }
 
