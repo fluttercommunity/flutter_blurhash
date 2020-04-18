@@ -17,6 +17,7 @@ class BlurHash extends StatefulWidget {
     this.decodingHeight = _DEFAULT_SIZE,
     this.image,
     this.onDecoded,
+    this.onReady,
     this.fadeOutDuration = const Duration(milliseconds: 300),
     this.fadeOutCurve = Curves.easeOut,
     this.fadeInDuration = const Duration(milliseconds: 700),
@@ -29,6 +30,9 @@ class BlurHash extends StatefulWidget {
 
   /// Callback when hash is decoded
   final VoidCallback onDecoded;
+
+  /// Callback when image is downloaded
+  final VoidCallback onReady;
 
   final String hash;
   final Color color;
@@ -102,7 +106,13 @@ class BlurHashState extends State<BlurHash> {
   Widget prepareDisplayedImage() =>
       Image.network(widget.image, fit: widget.imageFit, loadingBuilder:
           (BuildContext context, Widget img, ImageChunkEvent loadingProgress) {
-        return loadingProgress == null ? Display(child: img) : SizedBox();
+        // Image is here !
+        if (loadingProgress == null) {
+          widget.onReady?.call();
+          return Display(child: img);
+        } else {
+          return const SizedBox();
+        }
       });
 
   /// Decode the blurhash then display the resulting Image
@@ -136,12 +146,15 @@ class _DisplayState extends State<Display> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     controller = AnimationController(
         duration: const Duration(milliseconds: 1200), vsync: this);
-
     opacity = Tween<double>(begin: .0, end: 1.0).animate(controller);
-
     controller.forward();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

@@ -33,8 +33,8 @@ void main() {
 class BlurHashApp extends StatelessWidget {
   const BlurHashApp({Key key}) : super(key: key);
 
-  void onDecoded() {
-    print("Decoded");
+  void onReady() {
+    print("Ready");
   }
 
   @override
@@ -58,7 +58,7 @@ class BlurHashApp extends StatelessWidget {
           }),
       isInViewPortCondition:
           (double deltaTop, double deltaBottom, double viewPortDimension) =>
-              deltaTop < (0.6 * viewPortDimension) &&
+              deltaTop < (0.4 * viewPortDimension) &&
               deltaBottom > (0.3 * viewPortDimension));
 
   Container buildEntry(bool isInView, int idx) => Container(
@@ -68,12 +68,11 @@ class BlurHashApp extends StatelessWidget {
         child: isInView
             ? BlurHash(
                 fadeInDuration: const Duration(milliseconds: 1800),
-                onDecoded: onDecoded,
+                onReady: onReady,
                 hash: entries[idx][0],
                 image: entries[idx][1])
             : BlurHash(
                 fadeInDuration: const Duration(milliseconds: 1800),
-                onDecoded: onDecoded,
                 hash: entries[idx][0]),
       );
 }
