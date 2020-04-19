@@ -16,7 +16,7 @@ You can use https://blurha.sh/ for testing or use any official api on your serve
 
 ## Flutter Code
 
-Constrain your widget render area and let BlurHash fill the pixels
+Constrain your widget render area and let BlurHash fill the pixels.
 
 ```dart
 class BlurHashApp extends StatelessWidget {
