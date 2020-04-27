@@ -73,5 +73,5 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'BlurHashImage')}(${describeIdentity(blurHash)}, scale: $scale)';
+      '$runtimeType(${describeIdentity(blurHash)}, scale: $scale)';
 }
