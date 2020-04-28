@@ -13,14 +13,12 @@ dependencies:
 
   inview_notifier_list: ^1.0.0
   google_fonts: ^0.5.0+1
+  flutter_blurhash:
+    path: ../
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  flutter_blurhash:
-    path: ../
 
 flutter:
   uses-material-design: true
