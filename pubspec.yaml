@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
 
   meta: ^1.1.8
-  image: ^2.1.12
   transparent_image: ^1.0.0
 
 dev_dependencies:

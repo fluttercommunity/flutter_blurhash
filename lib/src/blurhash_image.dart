@@ -72,6 +72,5 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   int get hashCode => hashValues(blurHash.hashCode, scale);
 
   @override
-  String toString() =>
-      '$runtimeType(${describeIdentity(blurHash)}, scale: $scale)';
+  String toString() => '$runtimeType($blurHash, scale: $scale)';
 }
