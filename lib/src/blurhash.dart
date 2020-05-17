@@ -162,3 +162,23 @@ List _decodeAC(int value, double maximumValue) {
 
 const _digitCharacters =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
+
+class Style {
+  final String name;
+  final List<ui.Color> colors;
+  final ui.Color stroke;
+  final ui.Color background;
+
+  const Style({this.name, this.colors, this.stroke, this.background});
+}
+
+const styles = {
+  'flourish': [
+    Style(
+      name: 'one',
+      colors: [],
+      stroke: null,
+      background: null,
+    )
+  ]
+};

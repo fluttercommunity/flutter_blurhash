@@ -1,6 +1,6 @@
 name: flutter_blurhash
 description: Compact representation of a placeholder for an image. Encode a blurry image under 30 caracters for instant display like used by Medium
-version: 0.3.0
+version: 0.4.2
 homepage: https://github.com/fluttercommunity/flutter_blurhash
 maintainer: Robert Felker (@Solido)
 

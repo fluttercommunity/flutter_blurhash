@@ -23,6 +23,7 @@ class BlurHash extends StatefulWidget {
     this.curve = Curves.easeOut,
   })  : assert(color != null),
         assert(hash != null),
+        assert(duration != null),
         assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);

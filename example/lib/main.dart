@@ -34,24 +34,41 @@ const duration = Duration(milliseconds: 500);
 
 const radius = Radius.circular(16);
 
-const topMark = .6;
+const topMark = .7;
 
 void main() {
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false, home: const BlurHashApp()));
 }
 
-class BlurHashApp extends StatelessWidget {
+class BlurHashApp extends StatefulWidget {
   const BlurHashApp({Key key}) : super(key: key);
+
+  @override
+  _BlurHashAppState createState() => _BlurHashAppState();
+}
+
+class _BlurHashAppState extends State<BlurHashApp> {
+  double progression = 0;
 
   void onStarted() {
     print("Ready");
   }
 
+  double norm(double value, double min, double max) =>
+      (value - min) / (max - min);
+
   @override
   Widget build(BuildContext context) =>
       NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification notif) => true,
+          onNotification: (ScrollNotification notif) {
+            // NO need to setState
+            setState(() {
+              progression = norm(notif.metrics.pixels, 0, 1);
+              // print("Progression $progression / px ${notif.metrics.pixels}");
+            });
+            return true;
+          },
           child: Stack(children: [
             FractionallySizedBox(
               heightFactor: topMark,
@@ -68,8 +85,8 @@ class BlurHashApp extends StatelessWidget {
             Align(
               alignment: Alignment(-.8, -.5),
               child: Container(
-                margin: EdgeInsets.only(top: 110),
-                child: const Header(),
+                margin: EdgeInsets.only(top: 100),
+                child: Header(progression: progression),
               ),
             ),
             //BackdropFilter(child: , filter: ImageFilter.blur(sigmaY: 15, sigmaX: 15)),
@@ -98,7 +115,7 @@ class BlurHashApp extends StatelessWidget {
 
   Container buildEntry(bool isInView, int idx) => Container(
       padding: EdgeInsets.only(left: 0, right: 200),
-      height: 540,
+      height: 510,
       margin: const EdgeInsets.only(bottom: 24),
       child: isInView || idx == 0
           ? SynchronizedDisplay(
@@ -109,37 +126,50 @@ class BlurHashApp extends StatelessWidget {
 }
 
 class Header extends StatelessWidget {
-  const Header({
+  Header({
     Key key,
+    this.progression,
   }) : super(key: key);
 
+  final gradient = ColorTween(begin: Color(0xFF222222), end: Colors.black87);
+
+  final double progression;
+
   @override
-  Widget build(BuildContext context) => Column(
-        children: <Widget>[
-          Text(
-            "Discover",
-            style: GoogleFonts.josefinSans(
-              textStyle: TextStyle(
-                  color: const Color(0xFF222222),
-                  fontSize: 180,
-                  height: .84,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none),
-            ),
+  Widget build(BuildContext context) {
+    final base = progression / 100;
+    final color = gradient.lerp(base);
+
+    return Column(
+      children: <Widget>[
+        Text(
+          "Discover",
+          style: GoogleFonts.josefinSans(
+            textStyle: TextStyle(
+                color: color,
+                fontSize: 180,
+                height: .84,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none),
           ),
-          Text(
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 16),
+          child: Text(
             "Our\nCollection",
             style: GoogleFonts.josefinSans(
               textStyle: TextStyle(
-                  color: const Color(0xFF222222),
-                  fontSize: 120,
+                  color: color,
+                  fontSize: 130,
                   height: .84,
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.none),
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }
 
 class SynchronizedDisplay extends StatefulWidget {
@@ -192,7 +222,7 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay>
           alignment: Alignment(1.4, 0),
           child: Icon(
             Icons.chevron_right,
-            size: 50,
+            size: 60,
             color: Colors.white,
           ),
         ),

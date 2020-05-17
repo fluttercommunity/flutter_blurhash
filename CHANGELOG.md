@@ -1,3 +1,15 @@
+# 0.4.2
+
+- Remove dependency on Image package
+
+# 0.4.1
+
+- Correction with Object Type method that is internal only
+
+# 0.4.0
+
+- Direct ImageProvider by Rene Floor
+
 # 0.3.0
 
 - Events registration to sync your animations
