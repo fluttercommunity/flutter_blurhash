@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui' as ui show Codec;
-import 'dart:ui' show hashValues;
-import 'package:image/image.dart' as graphics;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -14,10 +10,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   /// Creates an object that decodes a [blurHash] as an image.
   ///
   /// The arguments must not be null.
-  const BlurHashImage(this.blurHash,
-      {this.decodingWidth = _DEFAULT_SIZE,
-      this.decodingHeight = _DEFAULT_SIZE,
-      this.scale = 1.0})
+  const BlurHashImage(this.blurHash, {this.decodingWidth = _DEFAULT_SIZE, this.decodingHeight = _DEFAULT_SIZE, this.scale = 1.0})
       : assert(blurHash != null),
         assert(scale != null);
 
@@ -40,32 +33,24 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
 
   @override
   ImageStreamCompleter load(BlurHashImage key, DecoderCallback decode) {
-    return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key, decode),
-      scale: key.scale,
-    );
+    return OneFrameImageStreamCompleter(_loadAsync(key));
   }
 
-  Future<ui.Codec> _loadAsync(BlurHashImage key, DecoderCallback decode) async {
+  Future<ImageInfo> _loadAsync(BlurHashImage key) async {
     assert(key == this);
 
-    var bytes = await blurHashDecode(
+    var image = await blurHashDecodeImage(
       blurHash: blurHash,
       width: decodingWidth,
       height: decodingHeight,
-    ).then((rs) {
-      final img = graphics.Image.fromBytes(decodingWidth, decodingHeight, rs);
-      return Uint8List.fromList(graphics.encodePng(img));
-    });
-    return decode(bytes);
+    );
+   return ImageInfo(image: image, scale: key.scale);
   }
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is BlurHashImage &&
-        other.blurHash == blurHash &&
-        other.scale == scale;
+    return other is BlurHashImage && other.blurHash == blurHash && other.scale == scale;
   }
 
   @override

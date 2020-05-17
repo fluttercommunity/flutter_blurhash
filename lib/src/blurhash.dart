@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 Future<Uint8List> blurHashDecode({
@@ -36,6 +37,7 @@ Future<Uint8List> blurHashDecode({
   final bytesPerRow = width * 4;
   final pixels = Uint8List(bytesPerRow * height);
 
+  int p = 0;
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       var r = .0;
@@ -56,10 +58,10 @@ Future<Uint8List> blurHashDecode({
       final intG = _linearTosRGB(g);
       final intB = _linearTosRGB(b);
 
-      pixels[4 * x + 0 + y * bytesPerRow] = intR;
-      pixels[4 * x + 1 + y * bytesPerRow] = intG;
-      pixels[4 * x + 2 + y * bytesPerRow] = intB;
-      pixels[4 * x + 3 + y * bytesPerRow] = 255;
+      pixels[p++] = intR;
+      pixels[p++] = intG;
+      pixels[p++] = intB;
+      pixels[p++] = 255;
     }
   }
 
@@ -78,7 +80,7 @@ Future<ui.Image> blurHashDecodeImage({
   final completer = Completer<ui.Image>();
 
   blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch)
-      .then((pixels) => ui.decodeImageFromPixels(Uint8List.view(pixels.buffer),
+      .then((pixels) => ui.decodeImageFromPixels(pixels,
           width, height, ui.PixelFormat.rgba8888, completer.complete));
 
   return completer.future;

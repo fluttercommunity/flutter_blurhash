@@ -1,8 +1,8 @@
-import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:image/image.dart' as graphics;
 
 const _DEFAULT_SIZE = 32;
 
@@ -63,7 +63,7 @@ class BlurHash extends StatefulWidget {
 }
 
 class BlurHashState extends State<BlurHash> {
-  Future<Uint8List> _image;
+  Future<ui.Image> _image;
   bool loaded;
   bool loading;
 
@@ -91,18 +91,11 @@ class BlurHashState extends State<BlurHash> {
   }
 
   void _decodeImage() {
-    _image = blurHashDecode(
+    _image = blurHashDecodeImage(
       blurHash: widget.hash,
       width: widget.decodingWidth,
       height: widget.decodingHeight,
-    ).then((rs) {
-      final img = graphics.Image.fromBytes(
-          widget.decodingWidth, widget.decodingHeight, rs);
-      return Uint8List.fromList(graphics.encodePng(img));
-    }).then((value) {
-      widget.onDecoded?.call();
-      return value;
-    });
+    );
   }
 
   @override
@@ -139,10 +132,10 @@ class BlurHashState extends State<BlurHash> {
       });
 
   /// Decode the blurhash then display the resulting Image
-  Widget buildBlurHashBackground() => FutureBuilder<Uint8List>(
+  Widget buildBlurHashBackground() => FutureBuilder<ui.Image>(
         future: _image,
         builder: (ctx, snap) => snap.hasData
-            ? Image(image: MemoryImage(snap.data), fit: widget.imageFit)
+            ? Image(image: UiImage(snap.data), fit: widget.imageFit)
             : Container(color: widget.color),
       );
 }
@@ -192,4 +185,37 @@ class _DisplayImageState extends State<_DisplayImage>
     controller.dispose();
     super.dispose();
   }
+}
+
+class UiImage extends ImageProvider<UiImage> {
+  final ui.Image image;
+  final double scale;
+
+  const UiImage(this.image, {this.scale = 1.0})
+      : assert(image != null),
+        assert(scale != null);
+
+  @override
+  Future<UiImage> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImage>(this);
+
+  @override
+  ImageStreamCompleter load(UiImage key, DecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
+
+  Future<ImageInfo> _loadAsync(UiImage key) async {
+    assert(key == this);
+    return ImageInfo(image: image, scale: key.scale);
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    if (other.runtimeType != runtimeType) return false;
+    final UiImage typedOther = other;
+    return image == typedOther.image && scale == typedOther.scale;
+  }
+
+  @override
+  int get hashCode => hashValues(image.hashCode, scale);
+
+  @override
+  String toString() => '$runtimeType(${describeIdentity(image)}, scale: $scale)';
 }
