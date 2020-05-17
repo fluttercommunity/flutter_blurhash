@@ -1,3 +1,7 @@
+# 0.5.0
+
+- Flutter Web compatibility thanks to @deakjahn
+
 # 0.4.2
 
 - Remove dependency on Image package
