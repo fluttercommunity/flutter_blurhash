@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -73,17 +74,49 @@ Future<ui.Image> blurHashDecodeImage({
   @required int width,
   @required int height,
   double punch = 1.0,
-}) {
+}) async {
   assert(blurHash != null && width != null && height != null && punch != null);
   _validateBlurHash(blurHash);
 
   final completer = Completer<ui.Image>();
 
-  blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch)
-      .then((pixels) => ui.decodeImageFromPixels(pixels,
-          width, height, ui.PixelFormat.rgba8888, completer.complete));
+  if (kIsWeb) {
+    // https://github.com/flutter/flutter/issues/45190
+    final pixels = await blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
+    completer.complete(_createBmp(pixels, width, height));
+  }
+  else {
+    blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
+      ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+    });
+  }
 
   return completer.future;
+}
+
+Future<ui.Image> _createBmp(Uint8List pixels, int width, int height) async {
+  int size = (width * height * 4) + 122;
+  final bmp = Uint8List(size);
+  final ByteData header = bmp.buffer.asByteData();
+  header.setUint8(0x0, 0x42);
+  header.setUint8(0x1, 0x4d);
+  header.setInt32(0x2, size, Endian.little);
+  header.setInt32(0xa, 122, Endian.little);
+  header.setUint32(0xe, 108, Endian.little);
+  header.setUint32(0x12, width, Endian.little);
+  header.setUint32(0x16, -height, Endian.little);
+  header.setUint16(0x1a, 1, Endian.little);
+  header.setUint32(0x1c, 32, Endian.little);
+  header.setUint32(0x1e, 3, Endian.little);
+  header.setUint32(0x22, width * height * 4, Endian.little);
+  header.setUint32(0x36, 0x000000ff, Endian.little);
+  header.setUint32(0x3a, 0x0000ff00, Endian.little);
+  header.setUint32(0x3e, 0x00ff0000, Endian.little);
+  header.setUint32(0x42, 0xff000000, Endian.little);
+  bmp.setRange(122, size, pixels);
+  final codec = await ui.instantiateImageCodec(bmp);
+  final frame = await codec.getNextFrame();
+  return frame.image;
 }
 
 double _sRGBToLinear(int value) {
