@@ -4,16 +4,13 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 Future<Uint8List> blurHashDecode({
-  @required String blurHash,
-  @required int width,
-  @required int height,
+  required String blurHash,
+  required int width,
+  required int height,
   double punch = 1.0,
 }) {
-  assert(blurHash != null && width != null && height != null && punch != null);
   _validateBlurHash(blurHash);
 
   final sizeFlag = _decode83(blurHash[0]);
@@ -23,7 +20,7 @@ Future<Uint8List> blurHashDecode({
   final quantisedMaximumValue = _decode83(blurHash[1]);
   final maximumValue = (quantisedMaximumValue + 1) / 166;
 
-  final colors = List(numX * numY);
+  final colors = []..length = numX * numY;
 
   for (var i = 0; i < colors.length; i++) {
     if (i == 0) {
@@ -70,24 +67,26 @@ Future<Uint8List> blurHashDecode({
 }
 
 Future<ui.Image> blurHashDecodeImage({
-  @required String blurHash,
-  @required int width,
-  @required int height,
+  required String blurHash,
+  required int width,
+  required int height,
   double punch = 1.0,
 }) async {
-  assert(blurHash != null && width != null && height != null && punch != null);
   _validateBlurHash(blurHash);
 
   final completer = Completer<ui.Image>();
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
+    final pixels = await blurHashDecode(
+        blurHash: blurHash, width: width, height: height, punch: punch);
     completer.complete(_createBmp(pixels, width, height));
-  }
-  else {
-    blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
-      ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+  } else {
+    blurHashDecode(
+            blurHash: blurHash, width: width, height: height, punch: punch)
+        .then((pixels) {
+      ui.decodeImageFromPixels(
+          pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
     });
   }
 
@@ -124,7 +123,7 @@ double _sRGBToLinear(int value) {
   if (v <= 0.04045) {
     return v / 12.92;
   } else {
-    return pow((v + 0.055) / 1.055, 2.4);
+    return pow((v + 0.055) / 1.055, 2.4) as double;
   }
 }
 
@@ -138,7 +137,7 @@ int _linearTosRGB(double value) {
 }
 
 void _validateBlurHash(String blurHash) {
-  if (blurHash == null || blurHash.length < 6) {
+  if (blurHash.length < 6) {
     throw Exception('The blurhash string must be at least 6 characters');
   }
 
@@ -155,7 +154,7 @@ void _validateBlurHash(String blurHash) {
 
 int _sign(double n) => (n < 0 ? -1 : 1);
 
-double _signPow(double val, double exp) => _sign(val) * pow(val.abs(), exp);
+num _signPow(double val, double exp) => _sign(val) * pow(val.abs(), exp);
 
 int _decode83(String str) {
   var value = 0;
@@ -172,19 +171,19 @@ int _decode83(String str) {
   return value;
 }
 
-List _decodeDC(int value) {
+List<double> _decodeDC(int value) {
   final intR = value >> 16;
   final intG = (value >> 8) & 255;
   final intB = value & 255;
   return [_sRGBToLinear(intR), _sRGBToLinear(intG), _sRGBToLinear(intB)];
 }
 
-List _decodeAC(int value, double maximumValue) {
+List<double> _decodeAC(int value, double maximumValue) {
   final quantR = (value / (19 * 19)).floor();
   final quantG = (value / 19).floor() % 19;
   final quantB = value % 19;
 
-  final List rgb = [
+  final rgb = [
     _signPow((quantR - 9) / 9, 2.0) * maximumValue,
     _signPow((quantG - 9) / 9, 2.0) * maximumValue,
     _signPow((quantB - 9) / 9, 2.0) * maximumValue
@@ -199,10 +198,11 @@ const _digitCharacters =
 class Style {
   final String name;
   final List<ui.Color> colors;
-  final ui.Color stroke;
-  final ui.Color background;
+  final ui.Color? stroke;
+  final ui.Color? background;
 
-  const Style({this.name, this.colors, this.stroke, this.background});
+  const Style(
+      {required this.name, required this.colors, this.stroke, this.background});
 }
 
 const styles = {
