@@ -1,3 +1,11 @@
+# 0.5.2-nullsafety.0
+
+- nullsafety.0
+
+# 0.5.1
+
+- Update dependencies
+
 # 0.5.0
 
 - Flutter Web compatibility thanks to @deakjahn
