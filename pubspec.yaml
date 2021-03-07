@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  meta:
-  pedantic:
+  meta: ^1.3.0
+  pedantic: ^1.11.0
 
 dev_dependencies:
   flutter_test:
