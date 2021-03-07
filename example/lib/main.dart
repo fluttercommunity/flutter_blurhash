@@ -42,7 +42,7 @@ void main() {
 }
 
 class BlurHashApp extends StatefulWidget {
-  const BlurHashApp({Key key}) : super(key: key);
+  const BlurHashApp({Key? key}) : super(key: key);
 
   @override
   _BlurHashAppState createState() => _BlurHashAppState();
@@ -127,8 +127,8 @@ class _BlurHashAppState extends State<BlurHashApp> {
 
 class Header extends StatelessWidget {
   Header({
-    Key key,
-    this.progression,
+    Key? key,
+    required this.progression,
   }) : super(key: key);
 
   final gradient = ColorTween(begin: Color(0xFF222222), end: Colors.black87);
@@ -173,7 +173,8 @@ class Header extends StatelessWidget {
 }
 
 class SynchronizedDisplay extends StatefulWidget {
-  const SynchronizedDisplay({Key key, this.hash, this.uri, this.title})
+  const SynchronizedDisplay(
+      {Key? key, required this.hash, required this.uri, required this.title})
       : super(key: key);
   final String hash;
   final String uri;
@@ -185,8 +186,8 @@ class SynchronizedDisplay extends StatefulWidget {
 
 class _SynchronizedDisplayState extends State<SynchronizedDisplay>
     with SingleTickerProviderStateMixin {
-  Animation<double> animatedWidth;
-  AnimationController controller;
+  late Animation<double> animatedWidth;
+  late AnimationController controller;
 
   double end = 100;
 

@@ -1,3 +1,7 @@
+# 0.5.4-nullsafety.0
+
+- nullsafety.1
+
 # 0.5.2-nullsafety.0
 
 - nullsafety.0
