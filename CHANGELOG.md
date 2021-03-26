@@ -1,3 +1,7 @@
+# 0.6.0
+
+- stable release for flutter 2.0
+
 # 0.5.4-nullsafety.0
 
 - nullsafety.1
