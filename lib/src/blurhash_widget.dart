@@ -93,6 +93,7 @@ class BlurHashState extends State<BlurHash> {
       blurHash: widget.hash,
       width: widget.decodingWidth,
       height: widget.decodingHeight,
+      decodeInBackground: true,
     );
   }
 

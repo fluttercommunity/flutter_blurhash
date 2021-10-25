@@ -10,10 +10,12 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   /// Creates an object that decodes a [blurHash] as an image.
   ///
   /// The arguments must not be null.
-  const BlurHashImage(this.blurHash,
-      {this.decodingWidth = _DEFAULT_SIZE,
-      this.decodingHeight = _DEFAULT_SIZE,
-      this.scale = 1.0});
+  const BlurHashImage(
+    this.blurHash, {
+    this.decodingWidth = _DEFAULT_SIZE,
+    this.decodingHeight = _DEFAULT_SIZE,
+    this.scale = 1.0,
+  });
 
   /// The bytes to decode into an image.
   final String blurHash;
@@ -44,6 +46,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
       blurHash: blurHash,
       width: decodingWidth,
       height: decodingHeight,
+      decodeInBackground: true,
     );
     return ImageInfo(image: image, scale: key.scale);
   }

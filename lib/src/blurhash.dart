@@ -4,8 +4,9 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
+import 'package:worker_manager/worker_manager.dart';
 
-Future<Uint8List> blurHashDecode({
+Uint8List blurHashDecode({
   required String blurHash,
   required int width,
   required int height,
@@ -63,35 +64,64 @@ Future<Uint8List> blurHashDecode({
     }
   }
 
-  return Future.value(pixels);
+  return pixels;
 }
-
+/// If [decodeInBackground] true, then decoding processed in background isolate
+/// with `worker_manager` isolate pool library
 Future<ui.Image> blurHashDecodeImage({
   required String blurHash,
   required int width,
   required int height,
   double punch = 1.0,
+  bool decodeInBackground = false,
 }) async {
   _validateBlurHash(blurHash);
 
   final completer = Completer<ui.Image>();
 
+  final pixels = decodeInBackground
+      ? await Executor().execute(
+          arg1: blurHash,
+          arg2: width,
+          arg3: height,
+          arg4: punch,
+          fun4: _blurHashDecodeCallback,
+        )
+      : blurHashDecode(
+          blurHash: blurHash,
+          width: width,
+          height: height,
+          punch: punch,
+        );
+
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await blurHashDecode(
-        blurHash: blurHash, width: width, height: height, punch: punch);
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    blurHashDecode(
-            blurHash: blurHash, width: width, height: height, punch: punch)
-        .then((pixels) {
-      ui.decodeImageFromPixels(
-          pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
-    });
+    ui.decodeImageFromPixels(
+      pixels,
+      width,
+      height,
+      ui.PixelFormat.rgba8888,
+      completer.complete,
+    );
   }
 
   return completer.future;
 }
+
+Uint8List _blurHashDecodeCallback(
+  String blurHash,
+  int width,
+  int height,
+  double punch,
+) =>
+    blurHashDecode(
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+    );
 
 Future<ui.Image> _createBmp(Uint8List pixels, int width, int height) async {
   int size = (width * height * 4) + 122;

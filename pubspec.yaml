@@ -5,16 +5,14 @@ homepage: https://github.com/fluttercommunity/flutter_blurhash
 maintainer: Robert Felker (@Solido)
 
 environment:
-  sdk: ">= 2.12.0 <3.0.0"
+  sdk: ">=2.12.0<3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  worker_manager: ^4.2.4
 
-  meta: ^1.3.0
-  pedantic: ^1.11.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
+#dev_dependencies:
+#  flutter_test:
+#    sdk: flutter
 
