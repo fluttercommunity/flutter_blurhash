@@ -39,4 +39,28 @@ class BlurHashApp extends StatelessWidget {
 }
 ```
 
+If you want decoding to take place in parallel you need to use `DecodingMode.isolate` (default: `DecodingMode.async`).
 
+```dart
+class BlurHashApp extends StatelessWidget {
+  const BlurHashApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(title: const Text("BlurHash")),
+      body: const SizedBox.expand(
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: 1.6,
+            child: BlurHash(
+              hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I",
+              decodingMode: DecodingMode.isolate,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+```
