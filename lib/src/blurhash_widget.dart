@@ -21,6 +21,7 @@ class BlurHash extends StatefulWidget {
     this.onStarted,
     this.duration = const Duration(milliseconds: 1000),
     this.curve = Curves.easeOut,
+    this.decodingMode = DecodingMode.async,
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
@@ -55,6 +56,9 @@ class BlurHash extends StatefulWidget {
   final Duration duration;
 
   final Curve curve;
+
+  /// Decoding mode
+  final DecodingMode decodingMode;
 
   @override
   BlurHashState createState() => BlurHashState();
@@ -93,6 +97,7 @@ class BlurHashState extends State<BlurHash> {
       blurHash: widget.hash,
       width: widget.decodingWidth,
       height: widget.decodingHeight,
+      decodingMode: widget.decodingMode,
     );
   }
 

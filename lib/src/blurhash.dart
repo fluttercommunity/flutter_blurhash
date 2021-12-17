@@ -5,6 +5,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
+enum DecodingMode { async, isolate }
+
 Future<Uint8List> isolateBlurHashDecode({
   required String blurHash,
   required int width,
@@ -86,6 +88,7 @@ Future<ui.Image> blurHashDecodeImage({
   required int width,
   required int height,
   double punch = 1.0,
+  DecodingMode decodingMode = DecodingMode.async,
 }) async {
   _validateBlurHash(blurHash);
 
@@ -93,12 +96,30 @@ Future<ui.Image> blurHashDecodeImage({
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await isolateBlurHashDecode(
-        blurHash: blurHash, width: width, height: height, punch: punch);
+    final pixels = decodingMode == DecodingMode.isolate
+        ? await isolateBlurHashDecode(
+            blurHash: blurHash, width: width, height: height, punch: punch)
+        : await blurHashDecode(
+            <String, dynamic>{
+              'blurHash': blurHash,
+              'width': width,
+              'height': height,
+              'punch': punch,
+            },
+          );
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    isolateBlurHashDecode(
-            blurHash: blurHash, width: width, height: height, punch: punch)
+    (decodingMode == DecodingMode.isolate
+            ? isolateBlurHashDecode(
+                blurHash: blurHash, width: width, height: height, punch: punch)
+            : blurHashDecode(
+                <String, dynamic>{
+                  'blurHash': blurHash,
+                  'width': width,
+                  'height': height,
+                  'punch': punch,
+                },
+              ))
         .then((pixels) {
       ui.decodeImageFromPixels(
           pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
