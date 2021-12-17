@@ -5,12 +5,27 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
-Future<Uint8List> blurHashDecode({
+Future<Uint8List> isolateBlurHashDecode({
   required String blurHash,
   required int width,
   required int height,
   double punch = 1.0,
-}) {
+}) =>
+    compute(
+      blurHashDecode,
+      <String, dynamic>{
+        'blurHash': blurHash,
+        'width': width,
+        'height': height,
+        'punch': punch,
+      },
+    );
+
+Future<Uint8List> blurHashDecode(Map<String, dynamic> params) {
+  final blurHash = params['blurHash'] as String;
+  final width = params['width'] as int;
+  final height = params['height'] as int;
+  final punch = params['punch'] as double;
   _validateBlurHash(blurHash);
 
   final sizeFlag = _decode83(blurHash[0]);
@@ -78,11 +93,11 @@ Future<ui.Image> blurHashDecodeImage({
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await blurHashDecode(
+    final pixels = await isolateBlurHashDecode(
         blurHash: blurHash, width: width, height: height, punch: punch);
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    blurHashDecode(
+    isolateBlurHashDecode(
             blurHash: blurHash, width: width, height: height, punch: punch)
         .then((pixels) {
       ui.decodeImageFromPixels(
