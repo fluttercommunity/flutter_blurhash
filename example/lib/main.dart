@@ -101,7 +101,7 @@ class _BlurHashAppState extends State<BlurHashApp> {
       itemCount: entries.length + 2,
       builder: (ctx, idx) => InViewNotifierWidget(
           id: '$idx',
-          builder: (BuildContext context, bool isInView, Widget child) {
+          builder: (BuildContext context, bool isInView, Widget? child) {
             if (idx == 0) return SizedBox(height: 500);
             if (idx == entries.length + 1) return SizedBox(height: 800);
 
