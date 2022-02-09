@@ -11,8 +11,8 @@ dependencies:
     sdk: flutter
 
   inview_notifier_list: ^3.0.0
-  google_fonts: ^2.0.0
-  flutter_blurhash:  ^0.6.0
+  google_fonts: ^2.3.1
+  flutter_blurhash: ^0.6.0
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,7 @@
+# 0.6.2
+
+- package update
+
 # 0.6.0
 
 - stable release for flutter 2.0
