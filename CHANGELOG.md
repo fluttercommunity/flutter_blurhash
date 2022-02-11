@@ -1,3 +1,7 @@
+# 0.6.4 
+
+- onDecoded() and onDisplayed() events
+
 # 0.6.2
 
 - package update
