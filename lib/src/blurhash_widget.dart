@@ -17,6 +17,7 @@ class BlurHash extends StatefulWidget {
     this.decodingHeight = _DEFAULT_SIZE,
     this.image,
     this.onDecoded,
+    this.onDisplayed,
     this.onReady,
     this.onStarted,
     this.duration = const Duration(milliseconds: 1000),
@@ -27,6 +28,9 @@ class BlurHash extends StatefulWidget {
 
   /// Callback when hash is decoded
   final VoidCallback? onDecoded;
+
+  /// Callback when hash is decoded
+  final VoidCallback? onDisplayed;
 
   /// Callback when image is downloaded
   final VoidCallback? onReady;
@@ -95,7 +99,7 @@ class BlurHashState extends State<BlurHash> {
       height: widget.decodingHeight,
     );
 
-    widget.onDecoded?.call();
+    _image.whenComplete(() => widget.onDecoded?.call());
   }
 
   @override
@@ -124,6 +128,7 @@ class BlurHashState extends State<BlurHash> {
             child: img,
             duration: widget.duration,
             curve: widget.curve,
+            onCompleted: () => widget.onDisplayed?.call(),
           );
         } else {
           return const SizedBox();
@@ -143,11 +148,13 @@ class _DisplayImage extends StatefulWidget {
   final Widget child;
   final Duration duration;
   final Curve curve;
+  final VoidCallback onCompleted;
 
   const _DisplayImage({
     required this.child,
     this.duration = const Duration(milliseconds: 800),
     required this.curve,
+    required this.onCompleted,
     Key? key,
   }) : super(key: key);
 
@@ -172,6 +179,10 @@ class _DisplayImageState extends State<_DisplayImage> with SingleTickerProviderS
     final curved = CurvedAnimation(parent: controller, curve: widget.curve);
     opacity = Tween<double>(begin: .0, end: 1.0).animate(curved);
     controller.forward();
+
+    curved.addStatusListener((status) {
+      if (status == AnimationStatus.completed) widget.onCompleted.call();
+    });
   }
 
   @override
