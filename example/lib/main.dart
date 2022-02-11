@@ -104,11 +104,7 @@ class _BlurHashAppState extends State<BlurHashApp> {
       margin: const EdgeInsets.only(bottom: 24),
       child: isInView || idx == 0
           ? SynchronizedDisplay(hash: entries[idx][0], uri: entries[idx][1], title: entries[idx][2])
-          : BlurHash(
-              onDecoded: () {
-                dev.log("Hash ${entries[idx][0]} decoded");
-              },
-              hash: entries[idx][0]));
+          : BlurHash(hash: entries[idx][0]));
 }
 
 class Header extends StatelessWidget {
@@ -171,62 +167,54 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
   double end = 100;
 
   @override
-  Widget build(BuildContext context) {
-    final w = animatedWidth.value;
-
-    return Stack(
-      alignment: Alignment(1.225, 0.0),
-      children: [
-        Transform.translate(
-          offset: Offset(w, 0),
-          child: Container(
-            width: 200,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF888888), Color(0xFFAAAAAA)],
-                  stops: [.1, 1],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                borderRadius: BorderRadius.only(topRight: radius, bottomRight: radius)),
+  Widget build(BuildContext context) => Stack(
+        alignment: Alignment(1.225, 0.0),
+        children: [
+          Transform.translate(
+            // Animated width
+            offset: Offset(animatedWidth.value, 0),
+            child: Container(
+              width: 200,
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF888888), Color(0xFFAAAAAA)],
+                    stops: [.1, 1],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.only(topRight: radius, bottomRight: radius)),
+            ),
           ),
-        ),
-        BlurHash(
-          onStarted: onStarted,
-          hash: widget.hash,
-          image: widget.uri,
-          duration: duration,
-          onDecoded: () {
-            dev.log("Hash ${widget.hash} decoded");
-          },
-        ),
-        Align(
-          alignment: Alignment(1.4, 0),
-          child: Icon(
-            Icons.chevron_right,
-            size: 60,
-            color: Colors.white,
+          BlurHash(
+            hash: widget.hash,
+            image: widget.uri,
+            duration: duration,
+            onStarted: onStarted,
+            onDecoded: onDecoded,
+            onDisplayed: onDisplayed,
           ),
-        ),
-        Transform.rotate(
-          angle: pi * -.5,
-          child: Text(
-            widget.title,
-            style: GoogleFonts.josefinSans(
-                textStyle: TextStyle(
-                    color: const Color(0xFFDDDDDD),
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.none)),
+          Align(
+            alignment: Alignment(1.4, 0),
+            child: Icon(
+              Icons.chevron_right,
+              size: 60,
+              color: Colors.white,
+            ),
           ),
-        )
-      ],
-    );
-  }
-
-  void onStarted() {
-    controller.forward();
-  }
+          Transform.rotate(
+            angle: pi * -.5,
+            child: Text(
+              widget.title,
+              style: GoogleFonts.josefinSans(
+                  textStyle: TextStyle(
+                      color: const Color(0xFFDDDDDD),
+                      fontSize: 45,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none)),
+            ),
+          )
+        ],
+      );
 
   @override
   void initState() {
@@ -242,4 +230,10 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
     controller.dispose();
     super.dispose();
   }
+
+  void onStarted() => controller.forward();
+
+  void onDecoded() => dev.log("Hash ${widget.hash} decoded");
+
+  void onDisplayed() => dev.log("Hash ${widget.uri} displayed");
 }
