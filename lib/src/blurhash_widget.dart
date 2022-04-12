@@ -1,4 +1,3 @@
-import 'dart:_http';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -24,7 +23,6 @@ class BlurHash extends StatefulWidget {
     this.duration = const Duration(milliseconds: 1000),
     this.httpHeaders = const {},
     this.curve = Curves.easeOut,
-
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
