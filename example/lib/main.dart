@@ -9,16 +9,16 @@ import 'package:inview_notifier_list/inview_notifier_list.dart';
 const entries = [
   [
     r'f8C6M$9tcY,FKOR*00%2RPNaaKjZUawdv#K4$Ps:HXELTJ,@XmS2=yxuNGn%IoR*',
-    'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
     'LG6'
   ],
   [
     r'f86RZIxu4TITofx]jsaeayozofWB00RP?w%NayMxkDt8ofM_Rjt8_4tRD$IUWAxu',
-    'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
     'ED8'
   ],
-  [r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,', 'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg', 'MT2'],
-  [r'L371cr_3RKKFsqICIVNG00eR?d-r', 'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg', 'TK1'],
+  [r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,', 'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg', 'MT2'],
+  [r'L371cr_3RKKFsqICIVNG00eR?d-r', 'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg', 'TK1'],
 ];
 
 const duration = Duration(milliseconds: 500);
