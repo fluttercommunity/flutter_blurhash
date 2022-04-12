@@ -1,3 +1,4 @@
+import 'dart:_http';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -21,7 +22,9 @@ class BlurHash extends StatefulWidget {
     this.onReady,
     this.onStarted,
     this.duration = const Duration(milliseconds: 1000),
+    this.httpHeaders = const {},
     this.curve = Curves.easeOut,
+
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
@@ -59,6 +62,9 @@ class BlurHash extends StatefulWidget {
   final Duration duration;
 
   final Curve curve;
+
+  /// Http headers for secure call like bearer
+  final Map<String, String> httpHeaders;
 
   @override
   BlurHashState createState() => BlurHashState();
@@ -112,28 +118,32 @@ class BlurHashState extends State<BlurHash> {
         ],
       );
 
-  Widget prepareDisplayedImage(String image) => Image.network(image, fit: widget.imageFit,
-          loadingBuilder: (BuildContext context, Widget img, ImageChunkEvent? loadingProgress) {
-        // Download started
-        if (loading == false) {
-          loading = true;
-          widget.onStarted?.call();
-        }
+  Widget prepareDisplayedImage(String image) => Image.network(
+        image,
+        fit: widget.imageFit,
+        headers: widget.httpHeaders,
+        loadingBuilder: (context, img, loadingProgress) {
+          // Download started
+          if (loading == false) {
+            loading = true;
+            widget.onStarted?.call();
+          }
 
-        if (loadingProgress == null) {
-          // Image is now loaded, trigger the event
-          loaded = true;
-          widget.onReady?.call();
-          return _DisplayImage(
-            child: img,
-            duration: widget.duration,
-            curve: widget.curve,
-            onCompleted: () => widget.onDisplayed?.call(),
-          );
-        } else {
-          return const SizedBox();
-        }
-      });
+          if (loadingProgress == null) {
+            // Image is now loaded, trigger the event
+            loaded = true;
+            widget.onReady?.call();
+            return _DisplayImage(
+              child: img,
+              duration: widget.duration,
+              curve: widget.curve,
+              onCompleted: () => widget.onDisplayed?.call(),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      );
 
   /// Decode the blurhash then display the resulting Image
   Widget buildBlurHashBackground() => FutureBuilder<ui.Image>(

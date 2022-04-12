@@ -1,3 +1,7 @@
+# 0.6.6
+
+- Add headers for secure auth calls
+
 # 0.6.4 
 
 - onDecoded() and onDisplayed() events
