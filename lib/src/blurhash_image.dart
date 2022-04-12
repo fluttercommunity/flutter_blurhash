@@ -34,7 +34,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   Future<ImageInfo> _loadAsync(BlurHashImage key) async {
     assert(key == this);
 
-    var image = await blurHashDecodeImage(
+    final image = await blurHashDecodeImage(
       blurHash: blurHash,
       width: decodingWidth,
       height: decodingHeight,

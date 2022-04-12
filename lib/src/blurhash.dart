@@ -5,12 +5,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
-Future<Uint8List> blurHashDecode({
-  required String blurHash,
-  required int width,
-  required int height,
-  double punch = 1.0,
-}) {
+Uint8List _blurHashDecode(Map<String, Object> params) {
+  final blurHash = params['blurHash'] as String;
+  final width = params['width'] as int;
+  final height = params['height'] as int;
+  final punch = params['punch'] as double;
   _validateBlurHash(blurHash);
 
   final sizeFlag = _decode83(blurHash[0]);
@@ -63,8 +62,24 @@ Future<Uint8List> blurHashDecode({
     }
   }
 
-  return Future.value(pixels);
+  return pixels;
 }
+
+Future<Uint8List> _asyncBlurHashDecode({
+  required String blurHash,
+  required int width,
+  required int height,
+  double punch = 1.0,
+}) =>
+    compute(
+      _blurHashDecode,
+      {
+        'blurHash': blurHash,
+        'width': width,
+        'height': height,
+        'punch': punch,
+      },
+    );
 
 Future<ui.Image> blurHashDecodeImage({
   required String blurHash,
@@ -78,15 +93,11 @@ Future<ui.Image> blurHashDecodeImage({
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await blurHashDecode(
-        blurHash: blurHash, width: width, height: height, punch: punch);
+    final pixels = await _asyncBlurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    blurHashDecode(
-            blurHash: blurHash, width: width, height: height, punch: punch)
-        .then((pixels) {
-      ui.decodeImageFromPixels(
-          pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+    _asyncBlurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
+      ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
     });
   }
 
@@ -146,8 +157,7 @@ void _validateBlurHash(String blurHash) {
   final numX = (sizeFlag % 9) + 1;
 
   if (blurHash.length != 4 + 2 * numX * numY) {
-    throw Exception(
-        'blurhash length mismatch: length is ${blurHash.length} but '
+    throw Exception('blurhash length mismatch: length is ${blurHash.length} but '
         'it should be ${4 + 2 * numX * numY}');
   }
 }
@@ -192,8 +202,7 @@ List<double> _decodeAC(int value, double maximumValue) {
   return rgb;
 }
 
-const _digitCharacters =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
+const _digitCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
 
 class Style {
   final String name;
@@ -201,8 +210,7 @@ class Style {
   final ui.Color? stroke;
   final ui.Color? background;
 
-  const Style(
-      {required this.name, required this.colors, this.stroke, this.background});
+  const Style({required this.name, required this.colors, this.stroke, this.background});
 }
 
 const styles = {
