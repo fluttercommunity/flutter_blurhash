@@ -21,6 +21,7 @@ class BlurHash extends StatefulWidget {
     this.onReady,
     this.onStarted,
     this.duration = const Duration(milliseconds: 1000),
+    this.httpHeaders = const {},
     this.curve = Curves.easeOut,
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
@@ -59,6 +60,9 @@ class BlurHash extends StatefulWidget {
   final Duration duration;
 
   final Curve curve;
+
+  /// Http headers for secure call like bearer
+  final Map<String, String> httpHeaders;
 
   @override
   BlurHashState createState() => BlurHashState();
@@ -115,6 +119,7 @@ class BlurHashState extends State<BlurHash> {
   Widget prepareDisplayedImage(String image) => Image.network(
         image,
         fit: widget.imageFit,
+
         loadingBuilder: (
           BuildContext context,
           Widget img,
@@ -131,10 +136,12 @@ class BlurHashState extends State<BlurHash> {
             loaded = true;
             widget.onReady?.call();
             return _DisplayImage(
+
               duration: widget.duration,
               curve: widget.curve,
               onCompleted: () => widget.onDisplayed?.call(),
               child: img,
+
             );
           } else {
             return const SizedBox();

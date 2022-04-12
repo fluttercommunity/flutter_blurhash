@@ -5,12 +5,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
-Future<Uint8List> blurHashDecode({
-  required String blurHash,
-  required int width,
-  required int height,
-  double punch = 1.0,
-}) {
+Uint8List _blurHashDecode(Map<String, Object> params) {
+  final blurHash = params['blurHash'] as String;
+  final width = params['width'] as int;
+  final height = params['height'] as int;
+  final punch = params['punch'] as double;
   _validateBlurHash(blurHash);
 
   final sizeFlag = _decode83(blurHash[0]);
@@ -63,8 +62,24 @@ Future<Uint8List> blurHashDecode({
     }
   }
 
-  return Future.value(pixels);
+  return pixels;
 }
+
+Future<Uint8List> _asyncBlurHashDecode({
+  required String blurHash,
+  required int width,
+  required int height,
+  double punch = 1.0,
+}) =>
+    compute(
+      _blurHashDecode,
+      {
+        'blurHash': blurHash,
+        'width': width,
+        'height': height,
+        'punch': punch,
+      },
+    );
 
 Future<ui.Image> blurHashDecodeImage({
   required String blurHash,
@@ -99,6 +114,7 @@ Future<ui.Image> blurHashDecodeImage({
         ui.PixelFormat.rgba8888,
         completer.complete,
       );
+
     });
   }
 
@@ -162,6 +178,7 @@ void _validateBlurHash(String blurHash) {
       'blurhash length mismatch: length is ${blurHash.length} but '
       'it should be ${4 + 2 * numX * numY}',
     );
+
   }
 }
 
@@ -205,8 +222,7 @@ List<double> _decodeAC(int value, double maximumValue) {
   return rgb;
 }
 
-const _digitCharacters =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
+const _digitCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
 
 class Style {
   final String name;
@@ -220,6 +236,7 @@ class Style {
     this.stroke,
     this.background,
   });
+
 }
 
 const styles = {

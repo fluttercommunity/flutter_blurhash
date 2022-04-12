@@ -9,16 +9,16 @@ import 'package:inview_notifier_list/inview_notifier_list.dart';
 const entries = [
   [
     r'f8C6M$9tcY,FKOR*00%2RPNaaKjZUawdv#K4$Ps:HXELTJ,@XmS2=yxuNGn%IoR*',
-    'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
     'LG6'
   ],
   [
     r'f86RZIxu4TITofx]jsaeayozofWB00RP?w%NayMxkDt8ofM_Rjt8_4tRD$IUWAxu',
-    'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
     'ED8'
   ],
-  [r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,', 'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg', 'MT2'],
-  [r'L371cr_3RKKFsqICIVNG00eR?d-r', 'https://cdn.mos.cms.futurecdn.net/TR4wp3g5bUSPcwpeUiohUU.jpg', 'TK1'],
+  [r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,', 'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg', 'MT2'],
+  [r'L371cr_3RKKFsqICIVNG00eR?d-r', 'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg', 'TK1'],
 ];
 
 const duration = Duration(milliseconds: 500);
@@ -28,7 +28,7 @@ const radius = Radius.circular(16);
 const topMark = .7;
 
 void main() {
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: const BlurHashApp()));
+  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()));
 }
 
 class BlurHashApp extends StatefulWidget {
@@ -42,7 +42,7 @@ class _BlurHashAppState extends State<BlurHashApp> {
   double progression = 0;
 
   void onStarted() {
-    print("Ready");
+    debugPrint("Ready");
   }
 
   double norm(double value, double min, double max) => (value - min) / (max - min);
@@ -71,9 +71,9 @@ class _BlurHashAppState extends State<BlurHashApp> {
           ),
         ),
         Align(
-          alignment: Alignment(-.8, -.5),
+          alignment: const Alignment(-.8, -.5),
           child: Container(
-            margin: EdgeInsets.only(top: 100),
+            margin: const EdgeInsets.only(top: 100),
             child: Header(progression: progression),
           ),
         ),
@@ -88,8 +88,8 @@ class _BlurHashAppState extends State<BlurHashApp> {
       builder: (ctx, idx) => InViewNotifierWidget(
           id: '$idx',
           builder: (BuildContext context, bool isInView, Widget? child) {
-            if (idx == 0) return SizedBox(height: 500);
-            if (idx == entries.length + 1) return SizedBox(height: 800);
+            if (idx == 0) return const SizedBox(height: 500);
+            if (idx == entries.length + 1) return const SizedBox(height: 800);
 
             return buildEntry(isInView, idx - 1);
           }),
@@ -99,7 +99,7 @@ class _BlurHashAppState extends State<BlurHashApp> {
       );
 
   Container buildEntry(bool isInView, int idx) => Container(
-      padding: EdgeInsets.only(left: 0, right: 200),
+      padding: const EdgeInsets.only(left: 0, right: 200),
       height: 510,
       margin: const EdgeInsets.only(bottom: 24),
       child: isInView || idx == 0
@@ -113,7 +113,7 @@ class Header extends StatelessWidget {
     required this.progression,
   }) : super(key: key);
 
-  final gradient = ColorTween(begin: Color(0xFF222222), end: Colors.black87);
+  final gradient = ColorTween(begin: const Color(0xFF222222), end: Colors.black87);
 
   final double progression;
 
@@ -132,7 +132,7 @@ class Header extends StatelessWidget {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: 16),
+          margin: const EdgeInsets.only(top: 16),
           child: Text(
             "Our\nCollection",
             style: GoogleFonts.josefinSans(
@@ -168,7 +168,7 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
 
   @override
   Widget build(BuildContext context) => Stack(
-        alignment: Alignment(1.225, 0.0),
+        alignment: const Alignment(1.225, 0.0),
         children: [
           Transform.translate(
             // Animated width
@@ -193,9 +193,9 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
             onDecoded: onDecoded,
             onDisplayed: onDisplayed,
           ),
-          Align(
-            alignment: Alignment(1.4, 0),
-            child: Icon(
+          const Align(
+            alignment:  Alignment(1.4, 0),
+            child:  Icon(
               Icons.chevron_right,
               size: 60,
               color: Colors.white,
@@ -206,8 +206,8 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
             child: Text(
               widget.title,
               style: GoogleFonts.josefinSans(
-                  textStyle: TextStyle(
-                      color: const Color(0xFFDDDDDD),
+                  textStyle: const TextStyle(
+                      color: Color(0xFFDDDDDD),
                       fontSize: 45,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.none)),
