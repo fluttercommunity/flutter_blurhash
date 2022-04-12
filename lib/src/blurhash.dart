@@ -44,7 +44,7 @@ Uint8List _blurHashDecode(Map<String, Object> params) {
       for (int j = 0; j < numY; j++) {
         for (int i = 0; i < numX; i++) {
           final basis = cos((pi * x * i) / width) * cos((pi * y * j) / height);
-          var color = colors[i + j * numX];
+          final color = colors[i + j * numX];
           r += color[0] * basis;
           g += color[1] * basis;
           b += color[2] * basis;
@@ -93,11 +93,28 @@ Future<ui.Image> blurHashDecodeImage({
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await _asyncBlurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
+    final pixels = await blurHashDecode(
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+    );
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    _asyncBlurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
-      ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+    blurHashDecode(
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+    ).then((pixels) {
+      ui.decodeImageFromPixels(
+        pixels,
+        width,
+        height,
+        ui.PixelFormat.rgba8888,
+        completer.complete,
+      );
+
     });
   }
 
@@ -105,7 +122,7 @@ Future<ui.Image> blurHashDecodeImage({
 }
 
 Future<ui.Image> _createBmp(Uint8List pixels, int width, int height) async {
-  int size = (width * height * 4) + 122;
+  final int size = (width * height * 4) + 122;
   final bmp = Uint8List(size);
   final ByteData header = bmp.buffer.asByteData();
   header.setUint8(0x0, 0x42);
@@ -157,12 +174,15 @@ void _validateBlurHash(String blurHash) {
   final numX = (sizeFlag % 9) + 1;
 
   if (blurHash.length != 4 + 2 * numX * numY) {
-    throw Exception('blurhash length mismatch: length is ${blurHash.length} but '
-        'it should be ${4 + 2 * numX * numY}');
+    throw Exception(
+      'blurhash length mismatch: length is ${blurHash.length} but '
+      'it should be ${4 + 2 * numX * numY}',
+    );
+
   }
 }
 
-int _sign(double n) => (n < 0 ? -1 : 1);
+int _sign(double n) => n < 0 ? -1 : 1;
 
 num _signPow(double val, double exp) => _sign(val) * pow(val.abs(), exp);
 
@@ -210,7 +230,13 @@ class Style {
   final ui.Color? stroke;
   final ui.Color? background;
 
-  const Style({required this.name, required this.colors, this.stroke, this.background});
+  const Style({
+    required this.name,
+    required this.colors,
+    this.stroke,
+    this.background,
+  });
+
 }
 
 const styles = {
@@ -218,8 +244,6 @@ const styles = {
     Style(
       name: 'one',
       colors: [],
-      stroke: null,
-      background: null,
     )
   ]
 };
