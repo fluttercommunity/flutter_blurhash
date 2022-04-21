@@ -5,11 +5,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 
-Uint8List _blurHashDecode(Map<String, Object> params) {
-  final blurHash = params['blurHash'] as String;
-  final width = params['width'] as int;
-  final height = params['height'] as int;
-  final punch = params['punch'] as double;
+Future<Uint8List> blurHashDecode({
+  required String blurHash,
+  required int width,
+  required int height,
+  double punch = 1.0,
+}) {
   _validateBlurHash(blurHash);
 
   final sizeFlag = _decode83(blurHash[0]);
@@ -62,24 +63,8 @@ Uint8List _blurHashDecode(Map<String, Object> params) {
     }
   }
 
-  return pixels;
+  return Future.value(pixels);
 }
-
-Future<Uint8List> _asyncBlurHashDecode({
-  required String blurHash,
-  required int width,
-  required int height,
-  double punch = 1.0,
-}) =>
-    compute(
-      _blurHashDecode,
-      {
-        'blurHash': blurHash,
-        'width': width,
-        'height': height,
-        'punch': punch,
-      },
-    );
 
 Future<ui.Image> blurHashDecodeImage({
   required String blurHash,
@@ -93,10 +78,10 @@ Future<ui.Image> blurHashDecodeImage({
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await _asyncBlurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
+    final pixels = await blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    _asyncBlurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
+    blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
       ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
     });
   }
@@ -200,6 +185,24 @@ List<double> _decodeAC(int value, double maximumValue) {
   ];
 
   return rgb;
+}
+
+bool validateBlurhash(String blurhash) {
+  if (blurhash.isEmpty || blurhash.length < 6) {
+    debugPrint('Blurhash should be at least 6 characters');
+    return false;
+  }
+
+  final sizeFlag = _decode83(blurhash[0]);
+  final y = ((sizeFlag / 9) + 1).floor();
+  final x = (sizeFlag % 9) + 1;
+
+  if (blurhash.length != 4 + 2 * x * y) {
+    debugPrint("blurhash length mismatch: length is ${blurhash.length} but it should be ${4 + 2 * x * y}");
+    return false;
+  }
+
+  return true;
 }
 
 const _digitCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";

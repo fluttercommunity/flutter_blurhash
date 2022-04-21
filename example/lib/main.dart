@@ -17,8 +17,31 @@ const entries = [
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
     'ED8'
   ],
-  [r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,', 'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg', 'MT2'],
-  [r'L371cr_3RKKFsqICIVNG00eR?d-r', 'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg', 'TK1'],
+  [
+    r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
+    'MT2'
+  ],
+  [
+    r'L371cr_3RKKFsqICIVNG00eR?d-r',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
+    'TK1'
+  ],
+  [
+    r'L371cr_3RKKFsqICIVNG00eR?d-r',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
+    'TK2'
+  ],
+  [
+    r'L371cr_3RKKFsqICIVNG00eR?d-r',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
+    'TK3'
+  ],
+  [
+    r'L371cr_3RKKFsqICIVNG00eR?d-r',
+    'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
+    'TK4'
+  ],
 ];
 
 const duration = Duration(milliseconds: 500);
@@ -27,9 +50,7 @@ const radius = Radius.circular(16);
 
 const topMark = .7;
 
-void main() {
-  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()));
-}
+void main() => runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()));
 
 class BlurHashApp extends StatefulWidget {
   const BlurHashApp({Key? key}) : super(key: key);
@@ -194,8 +215,8 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
             onDisplayed: onDisplayed,
           ),
           const Align(
-            alignment:  Alignment(1.4, 0),
-            child:  Icon(
+            alignment: Alignment(1.4, 0),
+            child: Icon(
               Icons.chevron_right,
               size: 60,
               color: Colors.white,

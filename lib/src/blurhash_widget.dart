@@ -23,6 +23,7 @@ class BlurHash extends StatefulWidget {
     this.duration = const Duration(milliseconds: 1000),
     this.httpHeaders = const {},
     this.curve = Curves.easeOut,
+    this.errorBuilder,
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
@@ -63,6 +64,9 @@ class BlurHash extends StatefulWidget {
 
   /// Http headers for secure call like bearer
   final Map<String, String> httpHeaders;
+
+  /// Network image errorBuilder
+  final ImageErrorWidgetBuilder? errorBuilder;
 
   @override
   BlurHashState createState() => BlurHashState();
@@ -120,6 +124,7 @@ class BlurHashState extends State<BlurHash> {
         image,
         fit: widget.imageFit,
         headers: widget.httpHeaders,
+        errorBuilder: widget.errorBuilder,
         loadingBuilder: (context, img, loadingProgress) {
           // Download started
           if (loading == false) {

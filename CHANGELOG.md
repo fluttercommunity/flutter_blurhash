@@ -1,3 +1,15 @@
+# 0.7.0
+
+- Add validateBlurhash() method
+
+# 0.6.8
+
+- ImageNetwork can receive an errorBuilder
+
+# 0.6.7
+
+- Rollback call to compute() and isolates as performances are down
+
 # 0.6.6
 
 - Add headers for secure auth calls
