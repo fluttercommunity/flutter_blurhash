@@ -128,6 +128,7 @@ class BlurHashState extends State<BlurHash> {
         image,
         fit: widget.imageFit,
         headers: widget.httpHeaders,
+        color: widget.color,
         colorBlendMode: widget.colorBlendMode,
         errorBuilder: widget.errorBuilder,
         loadingBuilder: (context, img, loadingProgress) {
