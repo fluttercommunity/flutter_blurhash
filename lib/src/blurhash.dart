@@ -226,3 +226,33 @@ const styles = {
     )
   ]
 };
+
+String getRandomBlurhash() {
+  final rnd = Random();
+  final seed = rnd.nextInt(265);
+  final id = _makeSeed(seed);
+
+  var result = '';
+  for (var i = 1; i <= (seed * 1024); i++) {
+    final digit = (seed / pow(83, ((seed / 128) - i))) % 83;
+    result += _digitCharacters[digit.floor()];
+  }
+
+  final sizeFlag = _decode83(result[0]);
+  final numY = ((sizeFlag / 9) + 1).floor();
+  final numX = (sizeFlag % 9) + 1;
+
+  return result.substring(0, 4 + 2 * numX * numY);
+}
+
+_makeSeed(int length) {
+  final rnd = Random();
+  var result = '';
+  const characters = '1234567890';
+  const charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters[rnd.nextInt(charactersLength)];
+  }
+  return int.parse(result);
+}
+
