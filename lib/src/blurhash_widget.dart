@@ -89,6 +89,9 @@ class BlurHashState extends State<BlurHash> {
   }
 
   void _init() {
+    loaded = false;
+    loading = false;
+
     if (widget.image != null) {
       _networkImage = prepareDisplayedImage(widget.image!);
     }
@@ -97,10 +100,8 @@ class BlurHashState extends State<BlurHash> {
         .addListener(ImageStreamListener((ImageInfo info, bool syncCall) {
       loaded = true;
     }));
-
+    
     _decodeImage();
-    loaded = false;
-    loading = false;
   }
 
   @override
@@ -166,8 +167,9 @@ class BlurHashState extends State<BlurHash> {
   /// Decode the blurhash then display the resulting Image
   Widget buildBlurHashBackground() => FutureBuilder<ui.Image>(
         future: _image,
-        builder: (ctx, snap) =>
-            snap.hasData ? Image(image: UiImage(snap.data!), fit: widget.imageFit) : Container(color: widget.color),
+        builder: (ctx, snap) => snap.hasData
+            ? Image(image: UiImage(snap.data!), fit: widget.imageFit)
+            : Container(color: widget.color),
       );
 }
 
@@ -190,7 +192,8 @@ class _DisplayImage extends StatefulWidget {
   _DisplayImageState createState() => _DisplayImageState();
 }
 
-class _DisplayImageState extends State<_DisplayImage> with SingleTickerProviderStateMixin {
+class _DisplayImageState extends State<_DisplayImage>
+    with SingleTickerProviderStateMixin {
   late Animation<double> opacity;
   late AnimationController controller;
 
@@ -227,10 +230,12 @@ class UiImage extends ImageProvider<UiImage> {
   const UiImage(this.image, {this.scale = 1.0});
 
   @override
-  Future<UiImage> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImage>(this);
+  Future<UiImage> obtainKey(ImageConfiguration configuration) =>
+      SynchronousFuture<UiImage>(this);
 
   @override
-  ImageStreamCompleter load(UiImage key, DecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
+  ImageStreamCompleter load(UiImage key, DecoderCallback decode) =>
+      OneFrameImageStreamCompleter(_loadAsync(key));
 
   Future<ImageInfo> _loadAsync(UiImage key) async {
     assert(key == this);
@@ -248,5 +253,6 @@ class UiImage extends ImageProvider<UiImage> {
   int get hashCode => hashValues(image.hashCode, scale);
 
   @override
-  String toString() => '$runtimeType(${describeIdentity(image)}, scale: $scale)';
+  String toString() =>
+      '$runtimeType(${describeIdentity(image)}, scale: $scale)';
 }
