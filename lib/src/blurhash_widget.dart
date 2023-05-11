@@ -80,6 +80,7 @@ class BlurHashState extends State<BlurHash> {
   late Future<ui.Image> _image;
   late bool loaded;
   late bool loading;
+  late Image _networkImage;
 
   @override
   void initState() {
@@ -88,6 +89,15 @@ class BlurHashState extends State<BlurHash> {
   }
 
   void _init() {
+    if (widget.image != null) {
+      _networkImage = prepareDisplayedImage(widget.image!);
+    }
+    _networkImage.image
+        .resolve(ImageConfiguration())
+        .addListener(ImageStreamListener((ImageInfo info, bool syncCall) {
+      loaded = true;
+    }));
+
     _decodeImage();
     loaded = false;
     loading = false;
@@ -120,11 +130,11 @@ class BlurHashState extends State<BlurHash> {
         alignment: Alignment.center,
         children: [
           buildBlurHashBackground(),
-          if (widget.image != null) prepareDisplayedImage(widget.image!),
+          if (widget.image != null) _networkImage,
         ],
       );
 
-  Widget prepareDisplayedImage(String image) => Image.network(
+  Image prepareDisplayedImage(String image) => Image.network(
         image,
         fit: widget.imageFit,
         headers: widget.httpHeaders,
@@ -135,8 +145,7 @@ class BlurHashState extends State<BlurHash> {
             loading = true;
             widget.onStarted?.call();
           }
-
-          if (loadingProgress == null) {
+          if (loaded) {
             // Image is now loaded, trigger the event
             loaded = true;
             widget.onReady?.call();
