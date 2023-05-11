@@ -16,6 +16,7 @@ class BlurHash extends StatefulWidget {
     this.decodingWidth = _DEFAULT_SIZE,
     this.decodingHeight = _DEFAULT_SIZE,
     this.image,
+    this.imgBgColor,
     this.onDecoded,
     this.onDisplayed,
     this.onReady,
@@ -45,6 +46,9 @@ class BlurHash extends StatefulWidget {
 
   /// Displayed background color before decoding
   final Color color;
+
+  /// Image background color displayed after the network image is loaded
+  final Color? imgBgColor;
 
   /// How to fit decoded & downloaded image
   final BoxFit imageFit;
@@ -137,7 +141,9 @@ class BlurHashState extends State<BlurHash> {
             loaded = true;
             widget.onReady?.call();
             return _DisplayImage(
-              child: img,
+              child: (widget.imgBgColor != null)
+                  ? Container(color: widget.imgBgColor, child: img)
+                  : img,
               duration: widget.duration,
               curve: widget.curve,
               onCompleted: () => widget.onDisplayed?.call(),
