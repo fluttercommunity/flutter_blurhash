@@ -23,10 +23,14 @@ class BlurHash extends StatefulWidget {
     this.duration = const Duration(milliseconds: 1000),
     this.httpHeaders = const {},
     this.curve = Curves.easeOut,
+    this.child,
     this.errorBuilder,
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
+  
+  /// Child Widget
+  final Widget? child;
 
   /// Callback when hash is decoded
   final VoidCallback? onDecoded;
@@ -117,6 +121,7 @@ class BlurHashState extends State<BlurHash> {
         children: [
           buildBlurHashBackground(),
           if (widget.image != null) prepareDisplayedImage(widget.image!),
+          if (widget.child != null) widget.child,
         ],
       );
 
