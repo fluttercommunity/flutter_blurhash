@@ -2,7 +2,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
+
+import 'blurhash.dart';
 
 const _DEFAULT_SIZE = 32;
 
@@ -137,10 +138,10 @@ class BlurHashState extends State<BlurHash> {
             loaded = true;
             widget.onReady?.call();
             return _DisplayImage(
-              child: img,
               duration: widget.duration,
               curve: widget.curve,
               onCompleted: () => widget.onDisplayed?.call(),
+              child: img,
             );
           } else {
             return const SizedBox();
@@ -151,8 +152,9 @@ class BlurHashState extends State<BlurHash> {
   /// Decode the blurhash then display the resulting Image
   Widget buildBlurHashBackground() => FutureBuilder<ui.Image>(
         future: _image,
-        builder: (ctx, snap) =>
-            snap.hasData ? Image(image: UiImage(snap.data!), fit: widget.imageFit) : Container(color: widget.color),
+        builder: (ctx, snap) => snap.hasData
+            ? Image(image: UiImage(snap.data!), fit: widget.imageFit)
+            : Container(color: widget.color),
       );
 }
 
@@ -175,7 +177,8 @@ class _DisplayImage extends StatefulWidget {
   _DisplayImageState createState() => _DisplayImageState();
 }
 
-class _DisplayImageState extends State<_DisplayImage> with SingleTickerProviderStateMixin {
+class _DisplayImageState extends State<_DisplayImage>
+    with SingleTickerProviderStateMixin {
   late Animation<double> opacity;
   late AnimationController controller;
 
@@ -212,10 +215,12 @@ class UiImage extends ImageProvider<UiImage> {
   const UiImage(this.image, {this.scale = 1.0});
 
   @override
-  Future<UiImage> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImage>(this);
+  Future<UiImage> obtainKey(ImageConfiguration configuration) =>
+      SynchronousFuture<UiImage>(this);
 
   @override
-  ImageStreamCompleter loadImage(UiImage key, ImageDecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
+  ImageStreamCompleter loadImage(UiImage key, ImageDecoderCallback decode) =>
+      OneFrameImageStreamCompleter(_loadAsync(key));
 
   Future<ImageInfo> _loadAsync(UiImage key) async {
     assert(key == this);
@@ -233,5 +238,6 @@ class UiImage extends ImageProvider<UiImage> {
   int get hashCode => Object.hash(image.hashCode, scale);
 
   @override
-  String toString() => '$runtimeType(${describeIdentity(image)}, scale: $scale)';
+  String toString() =>
+      '$runtimeType(${describeIdentity(image)}, scale: $scale)';
 }

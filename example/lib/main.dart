@@ -10,37 +10,37 @@ const entries = [
   [
     r'f8C6M$9tcY,FKOR*00%2RPNaaKjZUawdv#K4$Ps:HXELTJ,@XmS2=yxuNGn%IoR*',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'LG6'
+    'LG6',
   ],
   [
     r'f86RZIxu4TITofx]jsaeayozofWB00RP?w%NayMxkDt8ofM_Rjt8_4tRD$IUWAxu',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'ED8'
+    'ED8',
   ],
   [
     r'LZG6p1{I^6rX}G=0jGR$Z|t7NLW,',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'MT2'
+    'MT2',
   ],
   [
     r'L371cr_3RKKFsqICIVNG00eR?d-r',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'TK1'
+    'TK1',
   ],
   [
     r'L371cr_3RKKFsqICIVNG00eR?d-r',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'TK2'
+    'TK2',
   ],
   [
     r'L371cr_3RKKFsqICIVNG00eR?d-r',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'TK3'
+    'TK3',
   ],
   [
     r'L371cr_3RKKFsqICIVNG00eR?d-r',
     'https://www.auto-moto.com/wp-content/uploads/sites/9/2021/04/home-peugeot-3008-750x410.jpg',
-    'TK4'
+    'TK4',
   ],
 ];
 
@@ -50,7 +50,9 @@ const radius = Radius.circular(16);
 
 const topMark = .7;
 
-void main() => runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()));
+void main() => runApp(
+      const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()),
+    );
 
 class BlurHashApp extends StatefulWidget {
   const BlurHashApp({Key? key}) : super(key: key);
@@ -63,69 +65,84 @@ class _BlurHashAppState extends State<BlurHashApp> {
   double progression = 0;
 
   void onStarted() {
-    debugPrint("Ready");
+    debugPrint('Ready');
   }
 
-  double norm(double value, double min, double max) => (value - min) / (max - min);
+  double norm(double value, double min, double max) =>
+      (value - min) / (max - min);
 
   @override
-  Widget build(BuildContext context) => NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notif) {
-        // NO need to setState
-        setState(() {
-          progression = norm(notif.metrics.pixels, 0, 1);
-          // print("Progression $progression / px ${notif.metrics.pixels}");
-        });
-        return true;
-      },
-      child: Stack(children: [
-        FractionallySizedBox(
-          heightFactor: topMark,
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xEEFFFFFF), Color(0xCCFFFFFF)],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
+  Widget build(BuildContext context) =>
+      NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notif) {
+          // NO need to setState
+          setState(() {
+            progression = norm(notif.metrics.pixels, 0, 1);
+            // print("Progression $progression / px ${notif.metrics.pixels}");
+          });
+          return true;
+        },
+        child: Stack(
+          children: [
+            FractionallySizedBox(
+              heightFactor: topMark,
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xEEFFFFFF), Color(0xCCFFFFFF)],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                ),
               ),
             ),
-          ),
+            Align(
+              alignment: const Alignment(-.8, -.5),
+              child: Container(
+                margin: const EdgeInsets.only(top: 100),
+                child: Header(progression: progression),
+              ),
+            ),
+            //BackdropFilter(child: , filter: ImageFilter.blur(sigmaY: 15, sigmaX: 15)),
+            buildInViewNotifierList(),
+          ],
         ),
-        Align(
-          alignment: const Alignment(-.8, -.5),
-          child: Container(
-            margin: const EdgeInsets.only(top: 100),
-            child: Header(progression: progression),
-          ),
-        ),
-        //BackdropFilter(child: , filter: ImageFilter.blur(sigmaY: 15, sigmaX: 15)),
-        buildInViewNotifierList()
-      ]));
+      );
 
-  Widget buildList() => ListView.builder(itemCount: entries.length, itemBuilder: (ctx, idx) => buildEntry(true, idx));
+  Widget buildList() => ListView.builder(
+        itemCount: entries.length,
+        itemBuilder: (ctx, idx) => buildEntry(true, idx),
+      );
 
   Widget buildInViewNotifierList() => InViewNotifierList(
-      itemCount: entries.length + 2,
-      builder: (ctx, idx) => InViewNotifierWidget(
+        itemCount: entries.length + 2,
+        builder: (ctx, idx) => InViewNotifierWidget(
           id: '$idx',
           builder: (BuildContext context, bool isInView, Widget? child) {
             if (idx == 0) return const SizedBox(height: 500);
             if (idx == entries.length + 1) return const SizedBox(height: 800);
 
             return buildEntry(isInView, idx - 1);
-          }),
-      isInViewPortCondition: (double deltaTop, double deltaBottom, double viewPortDimension) =>
-          deltaTop < (topMark * viewPortDimension)
-      //&& deltaBottom > (0.3 * viewPortDimension)
+          },
+        ),
+        isInViewPortCondition:
+            (double deltaTop, double deltaBottom, double viewPortDimension) =>
+                deltaTop < (topMark * viewPortDimension),
+        //&& deltaBottom > (0.3 * viewPortDimension)
       );
 
   Container buildEntry(bool isInView, int idx) => Container(
-      padding: const EdgeInsets.only(left: 0, right: 200),
-      height: 510,
-      margin: const EdgeInsets.only(bottom: 24),
-      child: isInView || idx == 0
-          ? SynchronizedDisplay(hash: entries[idx][0], uri: entries[idx][1], title: entries[idx][2])
-          : BlurHash(hash: entries[idx][0]));
+        padding: const EdgeInsets.only(left: 0, right: 200),
+        height: 510,
+        margin: const EdgeInsets.only(bottom: 24),
+        child: isInView || idx == 0
+            ? SynchronizedDisplay(
+                hash: entries[idx][0],
+                uri: entries[idx][1],
+                title: entries[idx][2],
+              )
+            : BlurHash(hash: entries[idx][0]),
+      );
 }
 
 class Header extends StatelessWidget {
@@ -134,7 +151,8 @@ class Header extends StatelessWidget {
     required this.progression,
   }) : super(key: key);
 
-  final gradient = ColorTween(begin: const Color(0xFF222222), end: Colors.black87);
+  final gradient =
+      ColorTween(begin: const Color(0xFF222222), end: Colors.black87);
 
   final double progression;
 
@@ -146,23 +164,29 @@ class Header extends StatelessWidget {
     return Column(
       children: <Widget>[
         Text(
-          "Discover",
+          'Discover',
           style: GoogleFonts.josefinSans(
             textStyle: TextStyle(
-                color: color, fontSize: 180, height: .84, fontWeight: FontWeight.bold, decoration: TextDecoration.none),
+              color: color,
+              fontSize: 180,
+              height: .84,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.none,
+            ),
           ),
         ),
         Container(
           margin: const EdgeInsets.only(top: 16),
           child: Text(
-            "Our\nCollection",
+            'Our\nCollection',
             style: GoogleFonts.josefinSans(
               textStyle: TextStyle(
-                  color: color,
-                  fontSize: 130,
-                  height: .84,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none),
+                color: color,
+                fontSize: 130,
+                height: .84,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none,
+              ),
             ),
           ),
         ),
@@ -172,7 +196,12 @@ class Header extends StatelessWidget {
 }
 
 class SynchronizedDisplay extends StatefulWidget {
-  const SynchronizedDisplay({Key? key, required this.hash, required this.uri, required this.title}) : super(key: key);
+  const SynchronizedDisplay({
+    Key? key,
+    required this.hash,
+    required this.uri,
+    required this.title,
+  }) : super(key: key);
   final String hash;
   final String uri;
   final String title;
@@ -181,7 +210,8 @@ class SynchronizedDisplay extends StatefulWidget {
   _SynchronizedDisplayState createState() => _SynchronizedDisplayState();
 }
 
-class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTickerProviderStateMixin {
+class _SynchronizedDisplayState extends State<SynchronizedDisplay>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animatedWidth;
   late AnimationController controller;
 
@@ -197,13 +227,15 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
             child: Container(
               width: 200,
               decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF888888), Color(0xFFAAAAAA)],
-                    stops: [.1, 1],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: BorderRadius.only(topRight: radius, bottomRight: radius)),
+                gradient: LinearGradient(
+                  colors: [Color(0xFF888888), Color(0xFFAAAAAA)],
+                  stops: [.1, 1],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius:
+                    BorderRadius.only(topRight: radius, bottomRight: radius),
+              ),
             ),
           ),
           BlurHash(
@@ -227,13 +259,15 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
             child: Text(
               widget.title,
               style: GoogleFonts.josefinSans(
-                  textStyle: const TextStyle(
-                      color: Color(0xFFDDDDDD),
-                      fontSize: 45,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none)),
+                textStyle: const TextStyle(
+                  color: Color(0xFFDDDDDD),
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.none,
+                ),
+              ),
             ),
-          )
+          ),
         ],
       );
 
@@ -241,7 +275,8 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
   void initState() {
     super.initState();
     controller = AnimationController(duration: duration, vsync: this);
-    final curved = CurvedAnimation(parent: controller, curve: Curves.easeOutCirc);
+    final curved =
+        CurvedAnimation(parent: controller, curve: Curves.easeOutCirc);
     animatedWidth = Tween<double>(begin: -50, end: end).animate(curved);
     controller.addListener(() => setState(() {}));
   }
@@ -254,7 +289,7 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
 
   void onStarted() => controller.forward();
 
-  void onDecoded() => dev.log("Hash ${widget.hash} decoded");
+  void onDecoded() => dev.log('Hash ${widget.hash} decoded');
 
-  void onDisplayed() => dev.log("Hash ${widget.uri} displayed");
+  void onDisplayed() => dev.log('Hash ${widget.uri} displayed');
 }
