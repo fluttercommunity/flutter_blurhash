@@ -5,7 +5,7 @@ import 'package:flutter/painting.dart';
 
 import 'blurhash.dart';
 
-const _DEFAULT_SIZE = 32;
+const _defaultSize = 32;
 
 class BlurHashImage extends ImageProvider<BlurHashImage> {
   /// Creates an object that decodes a [blurHash] as an image.
@@ -13,8 +13,8 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   /// The arguments must not be null.
   const BlurHashImage(
     this.blurHash, {
-    this.decodingWidth = _DEFAULT_SIZE,
-    this.decodingHeight = _DEFAULT_SIZE,
+    this.decodingWidth = _defaultSize,
+    this.decodingHeight = _defaultSize,
     this.scale = 1.0,
   });
 

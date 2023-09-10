@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'blurhash.dart';
 
-const _DEFAULT_SIZE = 32;
+const _defaultSize = 32;
 
 /// Display a Hash then fade to Image
 class BlurHash extends StatefulWidget {
@@ -14,8 +14,8 @@ class BlurHash extends StatefulWidget {
     Key? key,
     this.color = Colors.blueGrey,
     this.imageFit = BoxFit.fill,
-    this.decodingWidth = _DEFAULT_SIZE,
-    this.decodingHeight = _DEFAULT_SIZE,
+    this.decodingWidth = _defaultSize,
+    this.decodingHeight = _defaultSize,
     this.image,
     this.onDecoded,
     this.onDisplayed,

@@ -58,7 +58,7 @@ class BlurHashApp extends StatefulWidget {
   const BlurHashApp({Key? key}) : super(key: key);
 
   @override
-  _BlurHashAppState createState() => _BlurHashAppState();
+  State<BlurHashApp> createState() => _BlurHashAppState();
 }
 
 class _BlurHashAppState extends State<BlurHashApp> {
@@ -207,7 +207,7 @@ class SynchronizedDisplay extends StatefulWidget {
   final String title;
 
   @override
-  _SynchronizedDisplayState createState() => _SynchronizedDisplayState();
+  State<SynchronizedDisplay> createState() => _SynchronizedDisplayState();
 }
 
 class _SynchronizedDisplayState extends State<SynchronizedDisplay>
