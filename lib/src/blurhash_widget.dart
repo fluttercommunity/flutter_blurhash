@@ -215,7 +215,7 @@ class UiImage extends ImageProvider<UiImage> {
   Future<UiImage> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImage>(this);
 
   @override
-  ImageStreamCompleter load(UiImage key, DecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
+  ImageStreamCompleter loadImage(UiImage key, ImageDecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
 
   Future<ImageInfo> _loadAsync(UiImage key) async {
     assert(key == this);
@@ -230,7 +230,7 @@ class UiImage extends ImageProvider<UiImage> {
   }
 
   @override
-  int get hashCode => hashValues(image.hashCode, scale);
+  int get hashCode => Object.hash(image.hashCode, scale);
 
   @override
   String toString() => '$runtimeType(${describeIdentity(image)}, scale: $scale)';

@@ -29,7 +29,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   Future<BlurHashImage> obtainKey(ImageConfiguration configuration) => SynchronousFuture<BlurHashImage>(this);
 
   @override
-  ImageStreamCompleter load(BlurHashImage key, DecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
+  ImageStreamCompleter loadImage(BlurHashImage key, ImageDecoderCallback decode) => OneFrameImageStreamCompleter(_loadAsync(key));
 
   Future<ImageInfo> _loadAsync(BlurHashImage key) async {
     assert(key == this);
@@ -48,7 +48,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
       : other is BlurHashImage && other.blurHash == blurHash && other.scale == scale;
 
   @override
-  int get hashCode => hashValues(blurHash.hashCode, scale);
+  int get hashCode => Object.hash(blurHash.hashCode, scale);
 
   @override
   String toString() => '$runtimeType($blurHash, scale: $scale)';
