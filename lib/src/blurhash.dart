@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -78,11 +77,15 @@ Future<ui.Image> blurHashDecodeImage({
 
   if (kIsWeb) {
     // https://github.com/flutter/flutter/issues/45190
-    final pixels = await blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch);
+    final pixels = await blurHashDecode(
+        blurHash: blurHash, width: width, height: height, punch: punch);
     completer.complete(_createBmp(pixels, width, height));
   } else {
-    blurHashDecode(blurHash: blurHash, width: width, height: height, punch: punch).then((pixels) {
-      ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+    blurHashDecode(
+            blurHash: blurHash, width: width, height: height, punch: punch)
+        .then((pixels) {
+      ui.decodeImageFromPixels(
+          pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
     });
   }
 
@@ -142,7 +145,8 @@ void _validateBlurHash(String blurHash) {
   final numX = (sizeFlag % 9) + 1;
 
   if (blurHash.length != 4 + 2 * numX * numY) {
-    throw Exception('blurhash length mismatch: length is ${blurHash.length} but '
+    throw Exception(
+        'blurhash length mismatch: length is ${blurHash.length} but '
         'it should be ${4 + 2 * numX * numY}');
   }
 }
@@ -198,14 +202,16 @@ bool validateBlurhash(String blurhash) {
   final x = (sizeFlag % 9) + 1;
 
   if (blurhash.length != 4 + 2 * x * y) {
-    debugPrint("blurhash length mismatch: length is ${blurhash.length} but it should be ${4 + 2 * x * y}");
+    debugPrint(
+        "blurhash length mismatch: length is ${blurhash.length} but it should be ${4 + 2 * x * y}");
     return false;
   }
 
   return true;
 }
 
-const _digitCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
+const _digitCharacters =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#\$%*+,-.:;=?@[]^_{|}~";
 
 class Style {
   final String name;
@@ -213,7 +219,8 @@ class Style {
   final ui.Color? stroke;
   final ui.Color? background;
 
-  const Style({required this.name, required this.colors, this.stroke, this.background});
+  const Style(
+      {required this.name, required this.colors, this.stroke, this.background});
 }
 
 const styles = {
