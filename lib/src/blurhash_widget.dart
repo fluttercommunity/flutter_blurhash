@@ -207,14 +207,6 @@ class _DisplayImageState extends State<_DisplayImage>
   }
 }
 
-class ZiIMage extends ImageProvider<UiImage> {
-  @override
-  Future<UiImage> obtainKey(ImageConfiguration configuration) {
-    // TODO: implement obtainKey
-    throw UnimplementedError();
-  }
-}
-
 class UiImage extends ImageProvider<UiImage> {
   final ui.Image image;
   final double scale;

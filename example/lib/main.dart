@@ -50,10 +50,11 @@ const radius = Radius.circular(16);
 
 const topMark = .7;
 
-void main() => runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()));
+void main() => runApp(
+    const MaterialApp(debugShowCheckedModeBanner: false, home: BlurHashApp()));
 
 class BlurHashApp extends StatefulWidget {
-  const BlurHashApp({Key? key}) : super(key: key);
+  const BlurHashApp({super.key});
 
   @override
   _BlurHashAppState createState() => _BlurHashAppState();
@@ -66,43 +67,47 @@ class _BlurHashAppState extends State<BlurHashApp> {
     debugPrint("Ready");
   }
 
-  double norm(double value, double min, double max) => (value - min) / (max - min);
+  double norm(double value, double min, double max) =>
+      (value - min) / (max - min);
 
   @override
-  Widget build(BuildContext context) => NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notif) {
-        // NO need to setState
-        setState(() {
-          progression = norm(notif.metrics.pixels, 0, 1);
-          // print("Progression $progression / px ${notif.metrics.pixels}");
-        });
-        return true;
-      },
-      child: Stack(children: [
-        FractionallySizedBox(
-          heightFactor: topMark,
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xEEFFFFFF), Color(0xCCFFFFFF)],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
+  Widget build(BuildContext context) =>
+      NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification notif) {
+            // NO need to setState
+            setState(() {
+              progression = norm(notif.metrics.pixels, 0, 1);
+              // print("Progression $progression / px ${notif.metrics.pixels}");
+            });
+            return true;
+          },
+          child: Stack(children: [
+            FractionallySizedBox(
+              heightFactor: topMark,
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xEEFFFFFF), Color(0xCCFFFFFF)],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        Align(
-          alignment: const Alignment(-.8, -.5),
-          child: Container(
-            margin: const EdgeInsets.only(top: 100),
-            child: Header(progression: progression),
-          ),
-        ),
-        //BackdropFilter(child: , filter: ImageFilter.blur(sigmaY: 15, sigmaX: 15)),
-        buildInViewNotifierList()
-      ]));
+            Align(
+              alignment: const Alignment(-.8, -.5),
+              child: Container(
+                margin: const EdgeInsets.only(top: 100),
+                child: Header(progression: progression),
+              ),
+            ),
+            //BackdropFilter(child: , filter: ImageFilter.blur(sigmaY: 15, sigmaX: 15)),
+            buildInViewNotifierList()
+          ]));
 
-  Widget buildList() => ListView.builder(itemCount: entries.length, itemBuilder: (ctx, idx) => buildEntry(true, idx));
+  Widget buildList() => ListView.builder(
+      itemCount: entries.length,
+      itemBuilder: (ctx, idx) => buildEntry(true, idx));
 
   Widget buildInViewNotifierList() => InViewNotifierList(
       itemCount: entries.length + 2,
@@ -114,8 +119,9 @@ class _BlurHashAppState extends State<BlurHashApp> {
 
             return buildEntry(isInView, idx - 1);
           }),
-      isInViewPortCondition: (double deltaTop, double deltaBottom, double viewPortDimension) =>
-          deltaTop < (topMark * viewPortDimension)
+      isInViewPortCondition:
+          (double deltaTop, double deltaBottom, double viewPortDimension) =>
+              deltaTop < (topMark * viewPortDimension)
       //&& deltaBottom > (0.3 * viewPortDimension)
       );
 
@@ -124,17 +130,21 @@ class _BlurHashAppState extends State<BlurHashApp> {
       height: 510,
       margin: const EdgeInsets.only(bottom: 24),
       child: isInView || idx == 0
-          ? SynchronizedDisplay(hash: entries[idx][0], uri: entries[idx][1], title: entries[idx][2])
+          ? SynchronizedDisplay(
+              hash: entries[idx][0],
+              uri: entries[idx][1],
+              title: entries[idx][2])
           : BlurHash(hash: entries[idx][0]));
 }
 
 class Header extends StatelessWidget {
   Header({
-    Key? key,
+    super.key,
     required this.progression,
-  }) : super(key: key);
+  });
 
-  final gradient = ColorTween(begin: const Color(0xFF222222), end: Colors.black87);
+  final gradient =
+      ColorTween(begin: const Color(0xFF222222), end: Colors.black87);
 
   final double progression;
 
@@ -149,7 +159,11 @@ class Header extends StatelessWidget {
           "Discover",
           style: GoogleFonts.josefinSans(
             textStyle: TextStyle(
-                color: color, fontSize: 180, height: .84, fontWeight: FontWeight.bold, decoration: TextDecoration.none),
+                color: color,
+                fontSize: 180,
+                height: .84,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.none),
           ),
         ),
         Container(
@@ -172,7 +186,9 @@ class Header extends StatelessWidget {
 }
 
 class SynchronizedDisplay extends StatefulWidget {
-  const SynchronizedDisplay({Key? key, required this.hash, required this.uri, required this.title}) : super(key: key);
+  const SynchronizedDisplay(
+      {super.key, required this.hash, required this.uri, required this.title});
+
   final String hash;
   final String uri;
   final String title;
@@ -181,7 +197,8 @@ class SynchronizedDisplay extends StatefulWidget {
   _SynchronizedDisplayState createState() => _SynchronizedDisplayState();
 }
 
-class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTickerProviderStateMixin {
+class _SynchronizedDisplayState extends State<SynchronizedDisplay>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animatedWidth;
   late AnimationController controller;
 
@@ -203,7 +220,8 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
-                  borderRadius: BorderRadius.only(topRight: radius, bottomRight: radius)),
+                  borderRadius:
+                      BorderRadius.only(topRight: radius, bottomRight: radius)),
             ),
           ),
           BlurHash(
@@ -241,7 +259,8 @@ class _SynchronizedDisplayState extends State<SynchronizedDisplay> with SingleTi
   void initState() {
     super.initState();
     controller = AnimationController(duration: duration, vsync: this);
-    final curved = CurvedAnimation(parent: controller, curve: Curves.easeOutCirc);
+    final curved =
+        CurvedAnimation(parent: controller, curve: Curves.easeOutCirc);
     animatedWidth = Tween<double>(begin: -50, end: end).animate(curved);
     controller.addListener(() => setState(() {}));
   }
