@@ -5,6 +5,12 @@ homepage: https://github.com/fluttercommunity/flutter_blurhash
 repository: https://github.com/fluttercommunity/flutter_blurhash
 maintainer: Robert Felker (@Solido)
 
+screenshots:
+  - description: 'Content preview as blurred buffer.'
+    path: screenshots/blurred.png
+  - description: 'Content loaded.'
+    path: screenshots/loaded.png
+
 environment:
   # flutter: ">=3.16.0"
   sdk: ">=3.0.0 <4.0.0"
@@ -19,4 +25,5 @@ dev_dependencies:
 
   flutter_test:
     sdk: flutter
+
 
