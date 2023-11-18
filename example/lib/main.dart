@@ -57,10 +57,10 @@ class BlurHashApp extends StatefulWidget {
   const BlurHashApp({super.key});
 
   @override
-  _BlurHashAppState createState() => _BlurHashAppState();
+  BlurHashAppState createState() => BlurHashAppState();
 }
 
-class _BlurHashAppState extends State<BlurHashApp> {
+class BlurHashAppState extends State<BlurHashApp> {
   double progression = 0;
 
   void onStarted() {
@@ -194,10 +194,10 @@ class SynchronizedDisplay extends StatefulWidget {
   final String title;
 
   @override
-  _SynchronizedDisplayState createState() => _SynchronizedDisplayState();
+  SynchronizedDisplayState createState() => SynchronizedDisplayState();
 }
 
-class _SynchronizedDisplayState extends State<SynchronizedDisplay>
+class SynchronizedDisplayState extends State<SynchronizedDisplay>
     with SingleTickerProviderStateMixin {
   late Animation<double> animatedWidth;
   late AnimationController controller;

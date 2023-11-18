@@ -6,6 +6,7 @@ repository: https://github.com/fluttercommunity/flutter_blurhash
 maintainer: Robert Felker (@Solido)
 
 environment:
+  # flutter: ">=3.16.0"
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
