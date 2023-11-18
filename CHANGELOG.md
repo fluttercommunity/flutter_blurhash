@@ -1,3 +1,7 @@
+# 0.8.1
+
+- Code review
+
 # 0.8.0
 
 - Flutter 3.0 as min required version
