@@ -3,8 +3,10 @@
 [![pub package](https://img.shields.io/pub/v/flutter_blurhash.svg)](https://pub.dev/packages/flutter_blurhash)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=%20%40BlueAquilae)](https://twitter.com/blueaquilae)
 # Flutter BlurHash
+A Flutter plugin for Compact representation of a placeholder for an image.
 
-Compact representation of a placeholder for an image.
+## Usage
+To use this plugin, add `flutter_blurhash` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
 
 ## Generation
@@ -14,7 +16,7 @@ Compact representation of a placeholder for an image.
 You can use https://blurha.sh/ for testing or use any official api on your server side.
 
 
-## Flutter Code
+## Flutter Code Example
 
 Constrain your widget render area and let BlurHash fill the pixels.
 
