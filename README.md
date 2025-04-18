@@ -2,41 +2,45 @@
 
 [![pub package](https://img.shields.io/pub/v/flutter_blurhash.svg)](https://pub.dev/packages/flutter_blurhash)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=%20%40BlueAquilae)](https://twitter.com/blueaquilae)
-# Flutter BlurHash
 
-Compact representation of a placeholder for an image.
+# flutter_blurhash
 
+[Blurhash](https://blurha.sh) is compact representation of a blurred image, often used fo
+
+This package implements the blurhash-decoding algorithm in pure Dart and provides the `BlurHash` widget that displays
+the blurhash and can transition into the actual image once it is loaded.
+
+It doesn't currently support encoding of Blurhash.
 
 ## Generation
 
-<img width="1211" alt="Capture d’écran 2020-02-21 à 19 11 56" src="https://user-images.githubusercontent.com/1295961/75059847-129d6800-54de-11ea-8832-d19ea58eb7eb.png">
+A fast and easy way to get a blurhash for your image is to upload it to https://blurha.sh.
 
-You can use https://blurha.sh/ for testing or use any official api on your server side.
+<img width="1211" alt="Blurhash demo" src="https://user-images.githubusercontent.com/1295961/75059847-129d6800-54de-11ea-8832-d19ea58eb7eb.png">
 
+## Example
 
-## Flutter Code
-
-Constrain your widget render area and let BlurHash fill the pixels.
+Constrain your widget's render area and let BlurHash fill the pixels.
 
 ```dart
-class BlurHashApp extends StatelessWidget {
-  const BlurHashApp({Key? key}) : super(key: key);
+class ExampleApp extends StatelessWidget {
+  const ExampleApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    home: Scaffold(
-      appBar: AppBar(title: const Text("BlurHash")),
-      body: const SizedBox.expand(
-        child: Center(
-          child: AspectRatio(
-            aspectRatio: 1.6,
-            child: BlurHash(hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I"),
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text("BlurHash")),
+        body: const SizedBox.expand(
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 1.6,
+              child: BlurHash(hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I"),
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 ```
-
-
