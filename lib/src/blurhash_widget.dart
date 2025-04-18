@@ -6,7 +6,8 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 const _DEFAULT_SIZE = 32;
 
-/// Display a Hash then fade to Image
+/// Displays the blurhash [hash] and the fades into the [image] over the course
+/// of [duration].
 class BlurHash extends StatefulWidget {
   const BlurHash({
     required this.hash,
@@ -31,7 +32,7 @@ class BlurHash extends StatefulWidget {
   /// Callback when hash is decoded
   final VoidCallback? onDecoded;
 
-  /// Callback when hash is decoded
+  /// Callback when hash is displayed.
   final VoidCallback? onDisplayed;
 
   /// Callback when image is downloaded
@@ -227,10 +228,9 @@ class UiImage extends ImageProvider<UiImage> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    final UiImage typedOther = other;
-    return image == typedOther.image && scale == typedOther.scale;
+    return other is UiImage && other.image == image && other.scale == scale;
   }
 
   @override
