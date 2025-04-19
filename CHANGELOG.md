@@ -1,3 +1,7 @@
+# 0.9.0
+
+- Performance by Raouf Rahiche
+
 # 0.8.1
 
 - Code review
