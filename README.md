@@ -44,3 +44,33 @@ class ExampleApp extends StatelessWidget {
   }
 }
 ```
+
+## Optimization Modes
+
+- **None** (`BlurHashOptimizationMode.none`): The original algorithm, provided for backward compatibility.
+- **Standard** (`BlurHashOptimizationMode.standard`): Optimized decoding with better cache locality and performance.
+- **Approximation** (`BlurHashOptimizationMode.approximation`): Fastest mode with an approximated sRGB conversion that produces slightly darker results but significantly improves performance.
+
+```dart
+class BlurHashApp extends StatelessWidget {
+  const BlurHashApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(title: const Text("BlurHash")),
+      body: const SizedBox.expand(
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: 1.6,
+            child: BlurHash(
+              hash: "L5H2EC=PM+yV0g-mq.wG9c010J}I",
+              optimizationMode: BlurHashOptimizationMode.approximation,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+```
