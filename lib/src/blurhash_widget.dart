@@ -24,6 +24,7 @@ class BlurHash extends StatefulWidget {
     this.httpHeaders = const {},
     this.curve = Curves.easeOut,
     this.errorBuilder,
+    this.optimizationMode = BlurHashOptimizationMode.none,
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
@@ -68,6 +69,9 @@ class BlurHash extends StatefulWidget {
   /// Network image errorBuilder
   final ImageErrorWidgetBuilder? errorBuilder;
 
+  /// The optimization mode to use for decoding
+  final BlurHashOptimizationMode optimizationMode;
+
   @override
   BlurHashState createState() => BlurHashState();
 }
@@ -95,7 +99,8 @@ class BlurHashState extends State<BlurHash> {
     if (widget.hash != oldWidget.hash ||
         widget.image != oldWidget.image ||
         widget.decodingWidth != oldWidget.decodingWidth ||
-        widget.decodingHeight != oldWidget.decodingHeight) {
+        widget.decodingHeight != oldWidget.decodingHeight ||
+        widget.optimizationMode != oldWidget.optimizationMode) {
       _init();
     }
   }
@@ -105,6 +110,7 @@ class BlurHashState extends State<BlurHash> {
       blurHash: widget.hash,
       width: widget.decodingWidth,
       height: widget.decodingHeight,
+      optimizationMode: widget.optimizationMode,
     );
 
     _image.whenComplete(() => widget.onDecoded?.call());
