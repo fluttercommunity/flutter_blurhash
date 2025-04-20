@@ -43,7 +43,7 @@ jobs:
 
       - name: Build example app
         working-directory: example
-        run: flutter build web --debug
+        run: flutter build web
 
       - name: Dry run pub publish
         # We don't want it to fail the CI, it's just to see how would `pub publish` behave.
