@@ -131,7 +131,7 @@ List<double> _createSRGBLookupTable(int size) {
     if (v <= 0.0031308) {
       table[i] = v * 12.92;
     } else {
-      table[i] = 1.055 * pow(v, 1/2.4) - 0.055;
+      table[i] = 1.055 * pow(v, 1 / 2.4) - 0.055;
     }
   }
   return table;
@@ -139,19 +139,20 @@ List<double> _createSRGBLookupTable(int size) {
 
 int _approximatedLinearTosRGB(double value) {
   final v = max(0.0, min(1.0, value));
-  
+
   // Find the closest indices in the lookup table
   final pos = v * (_sRGBLookupTable.length - 1);
   final idx = pos.floor();
   final fract = pos - idx;
-  
+
   // Edge case for the maximum value
   if (idx >= _sRGBLookupTable.length - 1) {
     return (_sRGBLookupTable[_sRGBLookupTable.length - 1] * 255 + 0.5).toInt();
   }
-  
+
   // Linear interpolation between the two closest values
-  final result = _sRGBLookupTable[idx] * (1 - fract) + _sRGBLookupTable[idx + 1] * fract;
+  final result =
+      _sRGBLookupTable[idx] * (1 - fract) + _sRGBLookupTable[idx + 1] * fract;
   return (result * 255 + 0.5).toInt();
 }
 
