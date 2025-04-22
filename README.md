@@ -5,12 +5,13 @@
 
 # flutter_blurhash
 
-[Blurhash](https://blurha.sh) is compact representation of a blurred image, often used fo
+[Blurhash](https://blurha.sh) is compact representation of a blurred image.
+It's often used as a placeholders while waiting for a full image to load.
 
-This package implements the blurhash-decoding algorithm in pure Dart and provides the `BlurHash` widget that displays
-the blurhash and can transition into the actual image once it is loaded.
+This package implements the blurhash-decoding algorithm in pure Dart.
+It also provides the `BlurHash` widget that displays the blurhash and can transition into the actual image once it is loaded.
 
-It doesn't currently support encoding of Blurhash.
+Currently, it doesn't support encoding an image into a blurhash.
 
 ## Generation
 
