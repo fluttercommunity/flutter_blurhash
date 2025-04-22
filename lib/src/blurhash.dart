@@ -121,19 +121,39 @@ Future<Uint8List> optimizedBlurHashDecode({
   return Future.value(pixels);
 }
 
-/// Approximated version using square roots for faster computation
-/// This will produce slightly different (darker) results but is faster
+// Create this once as a static variable
+final List<double> _sRGBLookupTable = _createSRGBLookupTable(256);
+
+List<double> _createSRGBLookupTable(int size) {
+  final table = List<double>.filled(size, 0);
+  for (int i = 0; i < size; i++) {
+    final v = i / (size - 1);
+    if (v <= 0.0031308) {
+      table[i] = v * 12.92;
+    } else {
+      table[i] = 1.055 * pow(v, 1 / 2.4) - 0.055;
+    }
+  }
+  return table;
+}
+
 int _approximatedLinearTosRGB(double value) {
   final v = max(0.0, min(1.0, value));
 
-  if (v <= 0.0031308) {
-    return (v * 12.92 * 255 + 0.5).toInt();
-  } else {
-    // Faster approximation with square roots
-    final vv = sqrt(v);
-    final vvv = sqrt(vv);
-    return ((1.055 * vv * vvv - 0.055) * 255 + 0.5).toInt();
+  // Find the closest indices in the lookup table
+  final pos = v * (_sRGBLookupTable.length - 1);
+  final idx = pos.floor();
+  final fract = pos - idx;
+
+  // Edge case for the maximum value
+  if (idx >= _sRGBLookupTable.length - 1) {
+    return (_sRGBLookupTable[_sRGBLookupTable.length - 1] * 255 + 0.5).toInt();
   }
+
+  // Linear interpolation between the two closest values
+  final result =
+      _sRGBLookupTable[idx] * (1 - fract) + _sRGBLookupTable[idx + 1] * fract;
+  return (result * 255 + 0.5).toInt();
 }
 
 Future<Uint8List> blurHashDecode({
