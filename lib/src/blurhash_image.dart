@@ -13,6 +13,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
   const BlurHashImage(this.blurHash,
       {this.decodingWidth = _DEFAULT_SIZE,
       this.decodingHeight = _DEFAULT_SIZE,
+      this.optimizationMode = BlurHashOptimizationMode.none,
       this.scale = 1.0});
 
   /// The bytes to decode into an image.
@@ -26,6 +27,9 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
 
   /// Decoding definition
   final int decodingHeight;
+
+  /// The optimization mode to use for decoding
+  final BlurHashOptimizationMode optimizationMode;
 
   @override
   Future<BlurHashImage> obtainKey(ImageConfiguration configuration) =>
@@ -43,6 +47,7 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
       blurHash: blurHash,
       width: decodingWidth,
       height: decodingHeight,
+      optimizationMode: optimizationMode,
     );
     return ImageInfo(image: image, scale: key.scale);
   }
