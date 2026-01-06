@@ -156,6 +156,32 @@ int _approximatedLinearTosRGB(double value) {
   return (result * 255 + 0.5).toInt();
 }
 
+Future<ui.Image> decodeBlurHash({
+  required String blurHash,
+  required int width,
+  required int height,
+  double punch = 1.0,
+  BlurHashOptimizationMode optimizationMode = BlurHashOptimizationMode.standard,
+  bool decodeInBackground = false,
+}) {
+  if (decodeInBackground) {
+    return isolateBlurHashDecodeImage(
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+      optimizationMode: optimizationMode,
+    );
+  }
+  return blurHashDecodeImage(
+    blurHash: blurHash,
+    width: width,
+    height: height,
+    punch: punch,
+    optimizationMode: optimizationMode,
+  );
+}
+
 Future<Uint8List> blurHashDecode({
   required String blurHash,
   required int width,
@@ -217,7 +243,7 @@ Future<Uint8List> blurHashDecode({
   return Future.value(pixels);
 }
 
-Future<ui.Image> blurHashDecodeImage({
+Future<ui.Image> isolateBlurHashDecodeImage({
   required String blurHash,
   required int width,
   required int height,
@@ -226,7 +252,59 @@ Future<ui.Image> blurHashDecodeImage({
 }) async {
   _validateBlurHash(blurHash);
 
+  final Uint8List pixels;
+  if (optimizationMode != BlurHashOptimizationMode.none) {
+    pixels = await compute((message) {
+      return optimizedBlurHashDecode(
+        blurHash: message.blurHash,
+        width: message.width,
+        height: message.height,
+        punch: message.punch,
+        optimizationMode: message.optimizationMode,
+      );
+    }, (
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+      optimizationMode: optimizationMode
+    ));
+  } else {
+    pixels = await compute((message) {
+      return blurHashDecode(
+        blurHash: message.blurHash,
+        width: message.width,
+        height: message.height,
+        punch: message.punch,
+      );
+    }, (
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+    ));
+  }
+
   final completer = Completer<ui.Image>();
+
+  if (kIsWeb) {
+    completer.complete(_createBmp(pixels, width, height));
+  } else {
+    ui.decodeImageFromPixels(
+        pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+  }
+
+  return completer.future;
+}
+
+Future<ui.Image> blurHashDecodeImage({
+  required String blurHash,
+  required int width,
+  required int height,
+  double punch = 1.0,
+  BlurHashOptimizationMode optimizationMode = BlurHashOptimizationMode.standard,
+}) async {
+  _validateBlurHash(blurHash);
 
   final Uint8List pixels;
   if (optimizationMode != BlurHashOptimizationMode.none) {
@@ -245,6 +323,8 @@ Future<ui.Image> blurHashDecodeImage({
       punch: punch,
     );
   }
+
+  final completer = Completer<ui.Image>();
 
   if (kIsWeb) {
     completer.complete(_createBmp(pixels, width, height));

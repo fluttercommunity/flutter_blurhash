@@ -26,6 +26,7 @@ class BlurHash extends StatefulWidget {
     this.curve = Curves.easeOut,
     this.errorBuilder,
     this.optimizationMode = BlurHashOptimizationMode.none,
+    this.decodeInBackground = true,
   })  : assert(decodingWidth > 0),
         assert(decodingHeight != 0),
         super(key: key);
@@ -73,6 +74,9 @@ class BlurHash extends StatefulWidget {
   /// The optimization mode to use for decoding
   final BlurHashOptimizationMode optimizationMode;
 
+  /// Decode in a background thread
+  final bool decodeInBackground;
+
   @override
   BlurHashState createState() => BlurHashState();
 }
@@ -107,11 +111,12 @@ class BlurHashState extends State<BlurHash> {
   }
 
   void _decodeImage() {
-    _image = blurHashDecodeImage(
+    _image = decodeBlurHash(
       blurHash: widget.hash,
       width: widget.decodingWidth,
       height: widget.decodingHeight,
       optimizationMode: widget.optimizationMode,
+      decodeInBackground: widget.decodeInBackground,
     );
 
     _image.whenComplete(() => widget.onDecoded?.call());
