@@ -82,6 +82,16 @@ class BlurHashState extends State<BlurHash> {
   late bool loaded;
   late bool loading;
 
+  /// The handle this state owns. Kept so it can be released, and so a decode
+  /// that lands after a newer one does not replace it.
+  ui.Image? _decoded;
+  int _decodeGeneration = 0;
+
+  /// The image decoded from [BlurHash.hash], or null before the first decode
+  /// completes.
+  @visibleForTesting
+  ui.Image? get debugDecodedImage => _decoded;
+
   @override
   void initState() {
     super.initState();
@@ -107,6 +117,7 @@ class BlurHashState extends State<BlurHash> {
   }
 
   void _decodeImage() {
+    final generation = ++_decodeGeneration;
     _image = blurHashDecodeImage(
       blurHash: widget.hash,
       width: widget.decodingWidth,
@@ -114,7 +125,23 @@ class BlurHashState extends State<BlurHash> {
       optimizationMode: widget.optimizationMode,
     );
 
+    _image.then((image) {
+      if (!mounted || generation != _decodeGeneration) {
+        image.dispose();
+        return;
+      }
+      _decoded?.dispose();
+      _decoded = image;
+    }).catchError((Object _) {});
+
     _image.whenComplete(() => widget.onDecoded?.call());
+  }
+
+  @override
+  void dispose() {
+    _decoded?.dispose();
+    _decoded = null;
+    super.dispose();
   }
 
   @override
@@ -230,7 +257,11 @@ class UiImage extends ImageProvider<UiImage> {
 
   Future<ImageInfo> _loadAsync(UiImage key) async {
     assert(key == this);
-    return ImageInfo(image: image, scale: key.scale);
+    // An ImageStreamCompleter owns and disposes the ImageInfo it is given, so
+    // hand it a clone and keep our own handle. Sharing the handle makes the
+    // first cache eviction dispose the caller's image, and the next resolve of
+    // the same handle throws "Cannot clone a disposed image".
+    return ImageInfo(image: image.clone(), scale: key.scale);
   }
 
   @override
