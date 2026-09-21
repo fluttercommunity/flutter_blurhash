@@ -23,6 +23,21 @@ Future<Uint8List> optimizedBlurHashDecode({
   required int height,
   double punch = 1.0,
   BlurHashOptimizationMode optimizationMode = BlurHashOptimizationMode.standard,
+}) =>
+    Future.value(_optimizedBlurHashDecodeSync(
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+      optimizationMode: optimizationMode,
+    ));
+
+Uint8List _optimizedBlurHashDecodeSync({
+  required String blurHash,
+  required int width,
+  required int height,
+  required double punch,
+  required BlurHashOptimizationMode optimizationMode,
 }) {
   _validateBlurHash(blurHash);
 
@@ -118,7 +133,7 @@ Future<Uint8List> optimizedBlurHashDecode({
     }
   }
 
-  return Future.value(pixels);
+  return pixels;
 }
 
 // Create this once as a static variable
@@ -161,6 +176,19 @@ Future<Uint8List> blurHashDecode({
   required int width,
   required int height,
   double punch = 1.0,
+}) =>
+    Future.value(_blurHashDecodeSync(
+      blurHash: blurHash,
+      width: width,
+      height: height,
+      punch: punch,
+    ));
+
+Uint8List _blurHashDecodeSync({
+  required String blurHash,
+  required int width,
+  required int height,
+  required double punch,
 }) {
   _validateBlurHash(blurHash);
 
@@ -214,7 +242,7 @@ Future<Uint8List> blurHashDecode({
     }
   }
 
-  return Future.value(pixels);
+  return pixels;
 }
 
 Future<ui.Image> blurHashDecodeImage({
@@ -224,37 +252,105 @@ Future<ui.Image> blurHashDecodeImage({
   double punch = 1.0,
   BlurHashOptimizationMode optimizationMode = BlurHashOptimizationMode.standard,
 }) async {
-  _validateBlurHash(blurHash);
+  final pixels = _decodePixels(
+    blurHash: blurHash,
+    width: width,
+    height: height,
+    punch: punch,
+    optimizationMode: optimizationMode,
+  );
 
-  final completer = Completer<ui.Image>();
-
-  final Uint8List pixels;
-  if (optimizationMode != BlurHashOptimizationMode.none) {
-    pixels = await optimizedBlurHashDecode(
-      blurHash: blurHash,
-      width: width,
-      height: height,
-      punch: punch,
-      optimizationMode: optimizationMode,
-    );
-  } else {
-    pixels = await blurHashDecode(
-      blurHash: blurHash,
-      width: width,
-      height: height,
-      punch: punch,
-    );
+  final image = _tryDecodeImageFromPixelsSync(pixels, width, height);
+  if (image != null) {
+    return image;
   }
 
   if (kIsWeb) {
-    completer.complete(_createBmp(pixels, width, height));
-  } else {
-    ui.decodeImageFromPixels(
-        pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
+    return _createBmp(pixels, width, height);
   }
 
+  final completer = Completer<ui.Image>();
+  ui.decodeImageFromPixels(
+      pixels, width, height, ui.PixelFormat.rgba8888, completer.complete);
   return completer.future;
 }
+
+/// Decodes [blurHash] into a [ui.Image] synchronously, using
+/// [ui.decodeImageFromPixelsSync].
+///
+/// This allows the blurhash to be displayed in the very first frame, instead
+/// of one or more frames later as with [blurHashDecodeImage].
+///
+/// Returns `null` if synchronous decoding is not supported on the current
+/// platform, which is the case on the web and when Impeller is not enabled.
+/// Callers should fall back to [blurHashDecodeImage] in that case.
+///
+/// Throws if [blurHash] is invalid.
+ui.Image? blurHashDecodeImageSync({
+  required String blurHash,
+  required int width,
+  required int height,
+  double punch = 1.0,
+  BlurHashOptimizationMode optimizationMode = BlurHashOptimizationMode.standard,
+}) {
+  _validateBlurHash(blurHash);
+  if (_syncDecodingUnsupported) {
+    return null;
+  }
+
+  final pixels = _decodePixels(
+    blurHash: blurHash,
+    width: width,
+    height: height,
+    punch: punch,
+    optimizationMode: optimizationMode,
+  );
+  return _tryDecodeImageFromPixelsSync(pixels, width, height);
+}
+
+/// Set once [ui.decodeImageFromPixelsSync] turned out to be unavailable, so
+/// that it is not attempted (and does not throw) over and over again.
+bool _syncDecodingUnsupported = kIsWeb;
+
+ui.Image? _tryDecodeImageFromPixelsSync(
+    Uint8List pixels, int width, int height) {
+  // Invalid dimensions are left to the asynchronous path to report.
+  if (_syncDecodingUnsupported || width <= 0 || height <= 0) {
+    return null;
+  }
+
+  try {
+    return ui.decodeImageFromPixelsSync(
+        pixels, width, height, ui.PixelFormat.rgba8888);
+  } catch (_) {
+    // Throws an UnimplementedError on the web and a String when Impeller is
+    // not enabled.
+    _syncDecodingUnsupported = true;
+    return null;
+  }
+}
+
+Uint8List _decodePixels({
+  required String blurHash,
+  required int width,
+  required int height,
+  required double punch,
+  required BlurHashOptimizationMode optimizationMode,
+}) =>
+    optimizationMode == BlurHashOptimizationMode.none
+        ? _blurHashDecodeSync(
+            blurHash: blurHash,
+            width: width,
+            height: height,
+            punch: punch,
+          )
+        : _optimizedBlurHashDecodeSync(
+            blurHash: blurHash,
+            width: width,
+            height: height,
+            punch: punch,
+            optimizationMode: optimizationMode,
+          );
 
 Future<ui.Image> _createBmp(Uint8List pixels, int width, int height) async {
   int size = (width * height * 4) + 122;
