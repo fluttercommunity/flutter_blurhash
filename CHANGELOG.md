@@ -1,3 +1,11 @@
+# Unreleased
+
+- Decode blurhashes synchronously with `ui.decodeImageFromPixelsSync` when
+  available (Impeller), so `BlurHash` and `BlurHashImage` show the blurhash in
+  the first frame. Falls back to asynchronous decoding on the web and Skia.
+- Add `blurHashDecodeImageSync`
+- Flutter 3.41 as min required version
+
 # 0.9.1
 
 - Corrections

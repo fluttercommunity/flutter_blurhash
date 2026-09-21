@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -33,8 +34,29 @@ class BlurHashImage extends ImageProvider<BlurHashImage> {
 
   @override
   ImageStreamCompleter loadImage(
-          BlurHashImage key, ImageDecoderCallback decode) =>
-      OneFrameImageStreamCompleter(_loadAsync(key));
+      BlurHashImage key, ImageDecoderCallback decode) {
+    final image = _loadSync(key);
+    if (image != null) {
+      return OneFrameImageStreamCompleter(
+          SynchronousFuture(ImageInfo(image: image, scale: key.scale)));
+    }
+    return OneFrameImageStreamCompleter(_loadAsync(key));
+  }
+
+  ui.Image? _loadSync(BlurHashImage key) {
+    assert(key == this);
+
+    try {
+      return blurHashDecodeImageSync(
+        blurHash: blurHash,
+        width: decodingWidth,
+        height: decodingHeight,
+      );
+    } catch (_) {
+      // Let _loadAsync report the error through the image stream.
+      return null;
+    }
+  }
 
   Future<ImageInfo> _loadAsync(BlurHashImage key) async {
     assert(key == this);

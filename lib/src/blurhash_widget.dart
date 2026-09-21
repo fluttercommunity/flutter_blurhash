@@ -79,6 +79,10 @@ class BlurHash extends StatefulWidget {
 
 class BlurHashState extends State<BlurHash> {
   late Future<ui.Image> _image;
+
+  /// Set when the blurhash could be decoded synchronously, so it can be
+  /// displayed without waiting for [_image] to complete.
+  ui.Image? _syncImage;
   late bool loaded;
   late bool loading;
 
@@ -107,12 +111,26 @@ class BlurHashState extends State<BlurHash> {
   }
 
   void _decodeImage() {
-    _image = blurHashDecodeImage(
-      blurHash: widget.hash,
-      width: widget.decodingWidth,
-      height: widget.decodingHeight,
-      optimizationMode: widget.optimizationMode,
-    );
+    try {
+      _syncImage = blurHashDecodeImageSync(
+        blurHash: widget.hash,
+        width: widget.decodingWidth,
+        height: widget.decodingHeight,
+        optimizationMode: widget.optimizationMode,
+      );
+    } catch (_) {
+      // Let blurHashDecodeImage report the error through the future.
+      _syncImage = null;
+    }
+
+    _image = _syncImage != null
+        ? Future.value(_syncImage)
+        : blurHashDecodeImage(
+            blurHash: widget.hash,
+            width: widget.decodingWidth,
+            height: widget.decodingHeight,
+            optimizationMode: widget.optimizationMode,
+          );
 
     _image.whenComplete(() => widget.onDecoded?.call());
   }
@@ -156,12 +174,19 @@ class BlurHashState extends State<BlurHash> {
       );
 
   /// Decode the blurhash then display the resulting Image
-  Widget buildBlurHashBackground() => FutureBuilder<ui.Image>(
-        future: _image,
-        builder: (ctx, snap) => snap.hasData
-            ? Image(image: UiImage(snap.data!), fit: widget.imageFit)
-            : Container(color: widget.color),
-      );
+  Widget buildBlurHashBackground() {
+    final syncImage = _syncImage;
+    if (syncImage != null) {
+      return Image(image: UiImage(syncImage), fit: widget.imageFit);
+    }
+
+    return FutureBuilder<ui.Image>(
+      future: _image,
+      builder: (ctx, snap) => snap.hasData
+          ? Image(image: UiImage(snap.data!), fit: widget.imageFit)
+          : Container(color: widget.color),
+    );
+  }
 }
 
 // Inner display details & controls
